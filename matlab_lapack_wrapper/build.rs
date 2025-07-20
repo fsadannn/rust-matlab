@@ -48,7 +48,7 @@ fn main() {
         "The path to the matlab link libraries does not exist: {link_search_path}"
     );
     // println!("cargo:rustc-link-search={link_search_path}");
-    println!("cargo:rustc-link-search=native={}", link_search_path);
+    println!("cargo:rustc-link-search=native={link_search_path}");
 
     // Tell cargo which libraries to link. On linux the standard linker 'ld' prepends the prefix 'lib' automatically for all libraries
     // while on windows the linker 'link.exe' uses the full filename, this step is handled separately depending on target platform.

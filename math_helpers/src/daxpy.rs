@@ -134,7 +134,7 @@ pub fn _daxpy_fallback(alpha: f64, source_x: *const f64, dest_y: *mut f64, size:
 ///   (which would be an in-place operation on Y, not a standard DAXPY).
 /// - The target CPU supports the necessary x86_64 SIMD instructions (e.g., SSE2 for _mm_pd operations).
 ///   This typically means compiling with `target_feature="+sse2"` or running on a modern x86_64 CPU.
-pub fn daxpy_simd(alpha: f64, source_x: *const f64, dest_y: *mut f64, size: usize) {
+pub unsafe fn daxpy_simd(alpha: f64, source_x: *const f64, dest_y: *mut f64, size: usize) {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     {
         if is_x86_feature_detected!("avx") {
@@ -157,13 +157,13 @@ mod tests {
     fn test_daxpy_simd_exact_multiple() {
         let size = 4;
         let alpha = 2.0;
-        let source_x = vec![1.0, 2.0, 3.0, 4.0];
+        let source_x = [1.0, 2.0, 3.0, 4.0];
         let mut dest_y = vec![5.0, 6.0, 7.0, 8.0]; // Initial Y
 
         let x_ptr = source_x.as_ptr();
         let y_ptr = dest_y.as_mut_ptr();
 
-        daxpy_simd(alpha, x_ptr, y_ptr, size);
+        unsafe { daxpy_simd(alpha, x_ptr, y_ptr, size) };
 
         // Expected: Y = 2.0 * X + Y
         // [2*1+5, 2*2+6, 2*3+7, 2*4+8] = [7.0, 10.0, 13.0, 16.0]
@@ -175,13 +175,13 @@ mod tests {
     fn test_daxpy_simd_remainder() {
         let size = 5;
         let alpha = -1.0;
-        let source_x = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+        let source_x = [1.0, 2.0, 3.0, 4.0, 5.0];
         let mut dest_y = vec![10.0, 20.0, 30.0, 40.0, 50.0];
 
         let x_ptr = source_x.as_ptr();
         let y_ptr = dest_y.as_mut_ptr();
 
-        daxpy_simd(alpha, x_ptr, y_ptr, size);
+        unsafe { daxpy_simd(alpha, x_ptr, y_ptr, size) };
 
         // Expected: Y = -1.0 * X + Y
         // [-1*1+10, -1*2+20, -1*3+30, -1*4+40, -1*5+50] = [9.0, 18.0, 27.0, 36.0, 45.0]
@@ -199,7 +199,7 @@ mod tests {
         let x_ptr = source_x.as_ptr();
         let y_ptr = dest_y.as_mut_ptr();
 
-        daxpy_simd(alpha, x_ptr, y_ptr, size);
+        unsafe { daxpy_simd(alpha, x_ptr, y_ptr, size) };
 
         let expected: Vec<f64> = vec![];
         assert_eq!(dest_y, expected);
@@ -209,13 +209,13 @@ mod tests {
     fn test_daxpy_simd_alpha_zero() {
         let size = 3;
         let alpha = 0.0;
-        let source_x = vec![1.0, 2.0, 3.0];
+        let source_x = [1.0, 2.0, 3.0];
         let mut dest_y = vec![10.0, 20.0, 30.0];
 
         let x_ptr = source_x.as_ptr();
         let y_ptr = dest_y.as_mut_ptr();
 
-        daxpy_simd(alpha, x_ptr, y_ptr, size);
+        unsafe { daxpy_simd(alpha, x_ptr, y_ptr, size) };
 
         // Expected: Y = 0.0 * X + Y = Y
         let expected = vec![10.0, 20.0, 30.0];
