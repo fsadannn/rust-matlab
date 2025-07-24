@@ -83,13 +83,10 @@ fn _daxpy_simd256(alpha: f64, source_x: *const f64, dest_y: *mut f64, size: usiz
     }
 
     match remainder {
-        3 => unsafe {
+        0 => (),
+        1 => unsafe {
             *dest_y.add(unrolled_limit) =
                 alpha * (*source_x.add(unrolled_limit)) + (*dest_y.add(unrolled_limit));
-            *dest_y.add(unrolled_limit + 1) =
-                alpha * (*source_x.add(unrolled_limit + 1)) + (*dest_y.add(unrolled_limit + 1));
-            *dest_y.add(unrolled_limit + 2) =
-                alpha * (*source_x.add(unrolled_limit + 2)) + (*dest_y.add(unrolled_limit + 2));
         },
         2 => unsafe {
             *dest_y.add(unrolled_limit) =
@@ -97,9 +94,13 @@ fn _daxpy_simd256(alpha: f64, source_x: *const f64, dest_y: *mut f64, size: usiz
             *dest_y.add(unrolled_limit + 1) =
                 alpha * (*source_x.add(unrolled_limit + 1)) + (*dest_y.add(unrolled_limit + 1));
         },
-        1 => unsafe {
+        3 => unsafe {
             *dest_y.add(unrolled_limit) =
                 alpha * (*source_x.add(unrolled_limit)) + (*dest_y.add(unrolled_limit));
+            *dest_y.add(unrolled_limit + 1) =
+                alpha * (*source_x.add(unrolled_limit + 1)) + (*dest_y.add(unrolled_limit + 1));
+            *dest_y.add(unrolled_limit + 2) =
+                alpha * (*source_x.add(unrolled_limit + 2)) + (*dest_y.add(unrolled_limit + 2));
         },
         _ => (),
     }

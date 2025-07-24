@@ -15,4 +15,30 @@ unsafe extern "C" {
         c: *mut f64,
         ldc: *const usize,
     );
+    pub fn dtrmm(
+        side: *const u8,
+        uplo: *const u8,
+        transa: *const u8,
+        diag: *const u8,
+        m: *const usize,
+        n: *const usize,
+        alpha: *const f64,
+        a: *const f64,
+        lda: *const usize,
+        b: *const f64,
+        ldb: *const usize,
+    );
+    pub fn dtrsm(
+        side: *const u8,
+        uplo: *const u8,
+        transa: *const u8,
+        diag: *const u8,
+        m: *const usize,
+        n: *const usize,
+        alpha: *const f64,
+        a: *const f64,
+        lda: *const usize,
+        b: *const f64,
+        ldb: *const usize,
+    );
 }

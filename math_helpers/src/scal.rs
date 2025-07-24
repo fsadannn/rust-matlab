@@ -88,17 +88,18 @@ fn _simd256_scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scal
     }
 
     match remainder {
-        3 => unsafe {
+        0 => (),
+        1 => unsafe {
             *dest.add(unrolled_limit) = *source.add(unrolled_limit) * scaling_factor;
-            *dest.add(unrolled_limit + 1) = *source.add(unrolled_limit + 1) * scaling_factor;
-            *dest.add(unrolled_limit + 2) = *source.add(unrolled_limit + 2) * scaling_factor;
         },
         2 => unsafe {
             *dest.add(unrolled_limit) = *source.add(unrolled_limit) * scaling_factor;
             *dest.add(unrolled_limit + 1) = *source.add(unrolled_limit + 1) * scaling_factor;
         },
-        1 => unsafe {
+        3 => unsafe {
             *dest.add(unrolled_limit) = *source.add(unrolled_limit) * scaling_factor;
+            *dest.add(unrolled_limit + 1) = *source.add(unrolled_limit + 1) * scaling_factor;
+            *dest.add(unrolled_limit + 2) = *source.add(unrolled_limit + 2) * scaling_factor;
         },
         _ => (),
     }
@@ -116,16 +117,16 @@ fn _scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scaling_fact
     for i in (0..unrolled_limit).step_by(UNROLL_FACTOR) {
         unsafe {
             // Process element i
-            *dest.wrapping_add(i) = *source.wrapping_add(i) * scaling_factor;
+            *dest.add(i) = *source.add(i) * scaling_factor;
 
             // Process element i + 1
-            *dest.wrapping_add(i + 1) = *source.wrapping_add(i + 1) * scaling_factor;
+            *dest.add(i + 1) = *source.add(i + 1) * scaling_factor;
 
             // Process element i + 2
-            *dest.wrapping_add(i + 2) = *source.wrapping_add(i + 2) * scaling_factor;
+            *dest.add(i + 2) = *source.add(i + 2) * scaling_factor;
 
             // Process element i + 3
-            *dest.wrapping_add(i + 3) = *source.wrapping_add(i + 3) * scaling_factor;
+            *dest.add(i + 3) = *source.add(i + 3) * scaling_factor;
         }
     }
 
@@ -133,7 +134,7 @@ fn _scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scaling_fact
     // This handles cases where 'size' is not a perfect multiple of UNROLL_FACTOR.
     for i in unrolled_limit..size {
         unsafe {
-            *dest.wrapping_add(i) = *source.wrapping_add(i) * scaling_factor;
+            *dest.add(i) = *source.add(i) * scaling_factor;
         }
     }
 }
