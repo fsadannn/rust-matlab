@@ -3,11 +3,13 @@
 
 use std::os::raw::c_int;
 
+use math_helpers::frexp;
 use matlab_base_wrapper::{
     mex::mexErrMsgTxt,
     mx::mxCreateDoubleMatrix,
     raw::{Rhs, mxArray, mxComplexity_mxREAL},
 };
+use matlab_lapack_wrapper::helpers::norm_inf;
 use rpade_shared::pade;
 
 #[allow(unused_variables)]
@@ -24,10 +26,10 @@ pub extern "C" fn mexFunction(
         ::std::slice::from_raw_parts_mut(plhs as *mut Option<&mut mxArray>, nlhs as usize)
     };
 
-    if nrhs != 3 {
+    if nrhs != 2 {
         // Letting the standard library do the work of making Rusts strings C-compatible
         unsafe {
-            mexErrMsgTxt("expm64v4: three input arguments required.\n\0".as_ptr());
+            mexErrMsgTxt("expm64v4: two input arguments required.\n\0".as_ptr());
         }
     }
 
@@ -56,15 +58,6 @@ pub extern "C" fn mexFunction(
             return;
         }
     };
-    let smx = match rhslice.get(2) {
-        Some(a) => a,
-        None => {
-            unsafe {
-                mexErrMsgTxt(b"expm64v4: third argument must be a mxArray.\n\0".as_ptr());
-            }
-            return;
-        }
-    };
 
     let dimensions = Amx.dimensions();
     if dimensions.len() != 2
@@ -78,9 +71,6 @@ pub extern "C" fn mexFunction(
 
     if !qmx.is_double() || !qmx.is_scalar() {
         unsafe { mexErrMsgTxt("expm64: Second argument must be a scalar.\n\0".as_ptr()) };
-    }
-    if !smx.is_scalar() {
-        unsafe { mexErrMsgTxt("expm64: SecoThirdnd argument must be a scalar.\n\0".as_ptr()) };
     }
 
     if nlhs > 1 {
@@ -101,9 +91,12 @@ pub extern "C" fn mexFunction(
 
     let ncols: usize = *dimensions.get(1).unwrap();
 
-    let A: *mut f64 = Amx.get_ptr();
-    let p = qmx.get_scalar() as i32;
-    let s: f64 = smx.get_scalar().ceil();
+    let A = Amx.get_ptr();
+    let p: i32 = qmx.get_scalar() as i32;
+
+    let normA = unsafe { norm_inf(nrows, A, nrows) };
+    let (_, e) = frexp(normA);
+    let s: u32 = std::cmp::max(0, e + 1).try_into().unwrap();
 
     let ans_matrix: *mut mxArray =
         unsafe { mxCreateDoubleMatrix(nrows, ncols, mxComplexity_mxREAL) };
@@ -112,7 +105,7 @@ pub extern "C" fn mexFunction(
 
     let P = unsafe { ans_matrix.as_mut().unwrap().get_ptr() };
 
-    let res = unsafe { pade(P, A, p, s, nrows, ncols) };
+    let res = unsafe { pade(P, A, p, s as f64, nrows, ncols) };
     match res {
         Ok(()) => (),
         Err(e) => unsafe { mexErrMsgTxt(e.as_ptr()) },

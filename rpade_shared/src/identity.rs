@@ -6,7 +6,8 @@
 /// * `Q` - A mutable raw pointer to the second matrix (f64).
 /// * `nrows` - The number of rows in the matrices.
 /// * `ncols` - The number of columns in the matrices.
-pub fn setIdentity2_unrolled(P: *mut f64, Q: *mut f64, nrows: usize, ncols: usize) {
+#[allow(non_snake_case)]
+pub fn set_identity2_unrolled(P: *mut f64, Q: *mut f64, nrows: usize, ncols: usize) {
     // Calculate the number of iterations that can be processed in chunks of 4
     let unrolled_limit = nrows - (nrows % 4);
 
@@ -56,7 +57,7 @@ mod tests {
         let p_ptr = p_data.as_mut_ptr();
         let q_ptr = q_data.as_mut_ptr();
 
-        setIdentity2_unrolled(p_ptr, q_ptr, nrows, ncols);
+        set_identity2_unrolled(p_ptr, q_ptr, nrows, ncols);
 
         // Verify the results
         for i in 0..nrows {
@@ -80,7 +81,7 @@ mod tests {
         let p_ptr_mult_4 = p_data_mult_4.as_mut_ptr();
         let q_ptr_mult_4 = q_data_mult_4.as_mut_ptr();
 
-        setIdentity2_unrolled(p_ptr_mult_4, q_ptr_mult_4, nrows_mult_4, ncols_mult_4);
+        set_identity2_unrolled(p_ptr_mult_4, q_ptr_mult_4, nrows_mult_4, ncols_mult_4);
 
         for i in 0..nrows_mult_4 {
             for j in 0..ncols_mult_4 {

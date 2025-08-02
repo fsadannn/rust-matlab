@@ -1,10 +1,12 @@
 [package]
-name = "rpade_triangular"
+name = "rpade_triangular_no_norm"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 matlab_base_wrapper = {path = "../matlab_base_wrapper"}
+matlab_lapack_wrapper = {path = "../matlab_lapack_wrapper"}
+math_helpers ={ path = "../math_helpers"}
 rpade_shared={ path = "../rpade_shared"}
 
 [lib]

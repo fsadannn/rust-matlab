@@ -4,7 +4,7 @@ version = 4
 
 [[package]]
 name = "math_helpers"
-version = "0.1.0"
+version = "0.1.1"
 
 [[package]]
 name = "matlab_base_wrapper"
@@ -16,10 +16,28 @@ version = "0.1.0"
 
 [[package]]
 name = "matlab_lapack_wrapper"
-version = "0.1.0"
+version = "0.1.1"
 
 [[package]]
 name = "rpade"
+version = "0.1.0"
+dependencies = [
+ "matlab_base_wrapper",
+ "rpade_shared",
+]
+
+[[package]]
+name = "rpade_no_norm"
+version = "0.1.0"
+dependencies = [
+ "math_helpers",
+ "matlab_base_wrapper",
+ "matlab_lapack_wrapper",
+ "rpade_shared",
+]
+
+[[package]]
+name = "rpade_shared"
 version = "0.1.0"
 dependencies = [
  "math_helpers",
@@ -32,7 +50,16 @@ dependencies = [
 name = "rpade_triangular"
 version = "0.1.0"
 dependencies = [
+ "matlab_base_wrapper",
+ "rpade_shared",
+]
+
+[[package]]
+name = "rpade_triangular_no_norm"
+version = "0.1.0"
+dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
- "matlab_blas_wrapper",
+ "matlab_lapack_wrapper",
+ "rpade_shared",
 ]
