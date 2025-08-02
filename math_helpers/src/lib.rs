@@ -1,9 +1,11 @@
 mod daxpy;
 mod dtri_maxmy;
+mod dxpy;
 mod scal;
 
 pub use daxpy::daxpy_simd as daxpy;
 pub use dtri_maxmy::dtri_maxmy_simd as dtri_maxmy;
+pub use dxpy::dxpy_simd as dxpy;
 pub use scal::scale_unrolled;
 
 pub fn frexp(x: f64) -> (f64, i32) {

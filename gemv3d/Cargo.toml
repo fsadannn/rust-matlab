@@ -1,0 +1,12 @@
+[package]
+name = "gemv3d"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+matlab_base_wrapper = {path = "../matlab_base_wrapper"}
+matlab_blas_wrapper = {path = "../matlab_blas_wrapper"}
+
+
+[lib]
+crate-type=["dylib"]

@@ -180,10 +180,10 @@ pub fn _dtri_maxmy_fallback(alpha: f64, source_x: *const f64, dest_y: *mut f64, 
 pub unsafe fn dtri_maxmy_simd(alpha: f64, source_x: *const f64, dest_y: *mut f64, size: usize) {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     {
-        if is_x86_feature_detected!("avx") {
+        if is_x86_feature_detected!("avx") && size >= 4 {
             return unsafe { _dtri_maxmy_simd256(alpha, source_x, dest_y, size) };
         }
-        if is_x86_feature_detected!("sse2") {
+        if is_x86_feature_detected!("sse2") && size >= 2 {
             return unsafe { _dtri_maxmy_simd(alpha, source_x, dest_y, size) };
         }
     }

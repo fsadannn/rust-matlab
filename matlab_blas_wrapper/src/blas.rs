@@ -41,4 +41,17 @@ unsafe extern "C" {
         b: *const f64,
         ldb: *const usize,
     );
+    pub fn dgemv(
+        trans: *const u8,
+        m: *const usize,
+        n: *const usize,
+        alpha: *const f64,
+        a: *const f64,
+        lda: *const usize,
+        x: *const f64,
+        incx: *const usize,
+        beta: *const f64,
+        c: *mut f64,
+        incy: *const usize,
+    );
 }
