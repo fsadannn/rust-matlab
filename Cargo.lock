@@ -20,6 +20,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "lin_milstein_com"
+version = "0.1.0"
+dependencies = [
+ "math_helpers",
+ "matlab_base_wrapper",
+ "matlab_blas_wrapper",
+]
+
+[[package]]
 name = "math_helpers"
 version = "0.0.0"
 
