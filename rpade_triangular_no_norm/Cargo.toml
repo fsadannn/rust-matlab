@@ -8,6 +8,7 @@ matlab_base_wrapper = {path = "../matlab_base_wrapper"}
 matlab_lapack_wrapper = {path = "../matlab_lapack_wrapper"}
 math_helpers ={ path = "../math_helpers"}
 rpade_shared={ path = "../rpade_shared"}
+mimalloc = "0.1.47"
 
 [lib]
 crate-type=["dylib"]

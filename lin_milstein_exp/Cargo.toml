@@ -1,13 +1,12 @@
 [package]
-name = "rpade_no_norm"
+name = "lin_milstein_exp"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 matlab_base_wrapper = {path = "../matlab_base_wrapper"}
-matlab_lapack_wrapper = {path = "../matlab_lapack_wrapper"}
-math_helpers ={ path = "../math_helpers"}
-rpade_shared={ path = "../rpade_shared"}
+matlab_blas_wrapper = {path = "../matlab_blas_wrapper"}
+math_helpers = {path = "../math_helpers"}
 mimalloc = "0.1.47"
 
 

@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 matlab_base_wrapper = {path = "../matlab_base_wrapper"}
+mimalloc = "0.1.47"
 rpade_shared={ path = "../rpade_shared"}
 
 [lib]
