@@ -162,10 +162,12 @@ fn _scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scaling_fact
 pub unsafe fn scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scaling_factor: f64) {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     {
-        if is_x86_feature_detected!("avx") && size >= 4 {
+        use crate::detec_features::{HAS_AVX, HAS_SSE2};
+
+        if HAS_AVX.load(std::sync::atomic::Ordering::Relaxed) && size >= 4 {
             return unsafe { _simd256_scale_unrolled(source, dest, size, scaling_factor) };
         }
-        if is_x86_feature_detected!("sse2") && size >= 2 {
+        if HAS_SSE2.load(std::sync::atomic::Ordering::Relaxed) && size >= 2 {
             return unsafe { _simd_scale_unrolled(source, dest, size, scaling_factor) };
         }
     }

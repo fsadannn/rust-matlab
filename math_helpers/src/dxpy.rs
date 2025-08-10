@@ -118,10 +118,12 @@ pub fn _dxpy_fallback(source_x: *const f64, dest_y: *mut f64, size: usize) {
 pub unsafe fn dxpy_simd(source_x: *const f64, dest_y: *mut f64, size: usize) {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     {
-        if is_x86_feature_detected!("avx") && size >= 4 {
+        use crate::detec_features::{HAS_AVX, HAS_SSE2};
+
+        if HAS_AVX.load(std::sync::atomic::Ordering::Relaxed) && size >= 4 {
             return unsafe { _dxpy_simd256(source_x, dest_y, size) };
         }
-        if is_x86_feature_detected!("sse2") && size >= 2 {
+        if HAS_SSE2.load(std::sync::atomic::Ordering::Relaxed) && size >= 2 {
             return unsafe { _dxpy_simd(source_x, dest_y, size) };
         }
     }

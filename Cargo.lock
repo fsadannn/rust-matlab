@@ -12,11 +12,44 @@ dependencies = [
 ]
 
 [[package]]
+name = "ctor"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ec09e802f5081de6157da9a75701d6c713d8dc3ba52571fd4bd25f412644e8a6"
+dependencies = [
+ "ctor-proc-macro",
+ "dtor",
+]
+
+[[package]]
+name = "ctor-proc-macro"
+version = "0.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e2931af7e13dc045d8e9d26afccc6fa115d64e115c9c84b1166288b46f6782c2"
+
+[[package]]
+name = "dtor"
+version = "0.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "97cbdf2ad6846025e8e25df05171abfb30e3ababa12ee0a0e44b9bbe570633a8"
+dependencies = [
+ "dtor-proc-macro",
+]
+
+[[package]]
+name = "dtor-proc-macro"
+version = "0.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7454e41ff9012c00d53cf7f475c5e3afa3b91b7c90568495495e8d9bf47a1055"
+
+[[package]]
 name = "gemv3d"
 version = "0.1.0"
 dependencies = [
+ "math_helpers",
  "matlab_base_wrapper",
  "matlab_blas_wrapper",
+ "mimalloc",
 ]
 
 [[package]]
@@ -46,7 +79,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "lin_milstein_com"
+name = "lin_milstein_exp"
 version = "0.1.0"
 dependencies = [
  "math_helpers",
@@ -56,7 +89,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "lin_milstein_exp"
+name = "lin_taylor_2_1"
 version = "0.1.0"
 dependencies = [
  "math_helpers",
@@ -68,6 +101,9 @@ dependencies = [
 [[package]]
 name = "math_helpers"
 version = "0.0.0"
+dependencies = [
+ "ctor",
+]
 
 [[package]]
 name = "matlab_base_wrapper"

@@ -61,6 +61,7 @@ pub unsafe fn pade(
     unsafe { daxpy(mc, Ak, Q, total_size) };
 
     match p {
+        1 => {}
         2 => {
             c = 0.083333333333333_f64;
             /* Ak = A*Ak; */

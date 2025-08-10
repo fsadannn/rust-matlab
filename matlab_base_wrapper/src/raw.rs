@@ -3,6 +3,7 @@
  */
 #![allow(bad_style)]
 pub type mxComplexity = ::std::os::raw::c_uint;
+pub type mxClassID = ::std::os::raw::c_uint;
 // NOTE: Bindgen made these signed types, but Matlab's tmwtypes header says in a comment
 // they should be unsigned (which makes more sense tbh)
 pub type mwSize = usize;
@@ -10,6 +11,8 @@ pub type mwSize = usize;
 pub const mxComplexity_mxREAL: mxComplexity = 0;
 #[allow(unused)]
 pub const mxComplexity_mxCOMPLEX: mxComplexity = 1;
+
+pub const mxClassID_mxDOUBLE_CLASS: mxClassID = 6;
 
 /**
  * The main matlab opaque array type, returned and accepted as argument by various mex

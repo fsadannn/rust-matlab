@@ -199,10 +199,32 @@ pub extern "C" fn mexFunction(
         let h: f64 = unsafe { *t.add(i) } - unsafe { *t.add(i - 1) };
         // yn1 = yn;
         unsafe { std::ptr::copy_nonoverlapping(yn, yn1, d) }
-        // yn1 = yn1 + a * h;
-        unsafe { daxpy(h, a, yn1, d) };
-        // yn1 = yn1 + A * yn * h;
-        unsafe { dgemv(CHN, rows, rows, &h, A, rows, yn, ONEI, ONE, yn1, ONEI) }
+        // aux = a
+        unsafe { std::ptr::copy_nonoverlapping(a, aux, d) }
+        // aux = A*y_n + a
+        unsafe { dgemv(CHN, rows, rows, ONE, A, rows, yn, ONEI, ONE, aux, ONEI) }
+        // yn1 = yn1 + aux*h = yn1 + (A*y_n + a)*h;
+        unsafe { daxpy(h, aux, yn1, d) };
+        // yn1 = yn1 + A*aux*h^2/5 = A*(A*y_n + a)*h^2/2;
+        unsafe {
+            dgemv(
+                CHN,
+                rows,
+                rows,
+                &(h * h / 2f64),
+                A,
+                rows,
+                aux,
+                ONEI,
+                ONE,
+                yn1,
+                ONEI,
+            )
+        }
+        // // yn1 = yn1 + a * h;
+        // unsafe { daxpy(h, a, yn1, d) };
+        // // yn1 = yn1 + A * yn * h;
+        // unsafe { dgemv(CHN, rows, rows, &h, A, rows, yn, ONEI, ONE, yn1, ONEI) }
         for j in 0..m {
             // aux = b(:,j)
             unsafe { std::ptr::copy_nonoverlapping(b.add(d * j), aux, d) }

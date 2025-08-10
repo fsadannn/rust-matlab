@@ -1,4 +1,5 @@
 mod daxpy;
+pub mod detec_features;
 mod dtri_maxmy;
 mod dxpy;
 mod scal;
