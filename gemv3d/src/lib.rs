@@ -1,8 +1,5 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
-#[global_allocator]
-static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
-
 use std::os::raw::c_int;
 
 use math_helpers::{dxpy, scale_unrolled};

@@ -7,7 +7,6 @@ edition = "2024"
 matlab_base_wrapper = {path = "../matlab_base_wrapper"}
 matlab_blas_wrapper = {path = "../matlab_blas_wrapper"}
 math_helpers = {path = "../math_helpers"}
-mimalloc = "0.1.47"
 
 
 [lib]

@@ -3,15 +3,6 @@
 version = 4
 
 [[package]]
-name = "cc"
-version = "1.2.32"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2352e5597e9c544d5e6d9c95190d5d27738ade584fa8db0a16e130e5c2b5296e"
-dependencies = [
- "shlex",
-]
-
-[[package]]
 name = "ctor"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -49,23 +40,6 @@ dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
  "matlab_blas_wrapper",
- "mimalloc",
-]
-
-[[package]]
-name = "libc"
-version = "0.2.174"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1171693293099992e19cddea4e8b849964e9846f4acee11b3948bcc337be8776"
-
-[[package]]
-name = "libmimalloc-sys"
-version = "0.1.43"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf88cd67e9de251c1781dbe2f641a1a3ad66eaae831b8a2c38fbdc5ddae16d4d"
-dependencies = [
- "cc",
- "libc",
 ]
 
 [[package]]
@@ -75,7 +49,6 @@ dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
  "matlab_blas_wrapper",
- "mimalloc",
 ]
 
 [[package]]
@@ -85,7 +58,6 @@ dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
  "matlab_blas_wrapper",
- "mimalloc",
 ]
 
 [[package]]
@@ -108,20 +80,10 @@ name = "matlab_lapack_wrapper"
 version = "0.0.0"
 
 [[package]]
-name = "mimalloc"
-version = "0.1.47"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1791cbe101e95af5764f06f20f6760521f7158f69dbf9d6baf941ee1bf6bc40"
-dependencies = [
- "libmimalloc-sys",
-]
-
-[[package]]
 name = "rpade"
 version = "0.1.0"
 dependencies = [
  "matlab_base_wrapper",
- "mimalloc",
  "rpade_shared",
 ]
 
@@ -132,7 +94,6 @@ dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
  "matlab_lapack_wrapper",
- "mimalloc",
  "rpade_shared",
 ]
 
@@ -151,7 +112,6 @@ name = "rpade_triangular"
 version = "0.1.0"
 dependencies = [
  "matlab_base_wrapper",
- "mimalloc",
  "rpade_shared",
 ]
 
@@ -162,12 +122,5 @@ dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
  "matlab_lapack_wrapper",
- "mimalloc",
  "rpade_shared",
 ]
-
-[[package]]
-name = "shlex"
-version = "1.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
