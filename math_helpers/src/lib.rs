@@ -1,14 +1,14 @@
 mod daxpy;
-pub mod detec_features;
 mod dtri_maxmy;
 mod dxpy;
 mod scal;
 
 pub use daxpy::{daxpy, daxpy_avx, daxpy_fallback, daxpy_simd};
-pub use dtri_maxmy::dtri_maxmy_simd as dtri_maxmy;
+pub use dtri_maxmy::{dtri_maxmy, dtri_maxmy_avx, dtri_maxmy_fallback, dtri_maxmy_simd};
 pub use dxpy::{dxpy, dxpy_avx, dxpy_fallback, dxpy_simd};
 pub use scal::{scale_unrolled, scale_unrolled_avx, scale_unrolled_fallback, scale_unrolled_simd};
 
+#[inline]
 pub fn frexp(x: f64) -> (f64, i32) {
     let mut y = x.to_bits();
     let ee = ((y >> 52) & 0x7ff) as i32;

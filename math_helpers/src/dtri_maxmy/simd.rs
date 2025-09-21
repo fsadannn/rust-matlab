@@ -1,0 +1,58 @@
+/// # Safety
+///
+/// This function is `unsafe` because it uses raw pointers and relies on the caller
+/// to ensure that:
+/// - `source_x` and `dest_y` are valid, non-null pointers.
+/// - The memory regions pointed to by `source_x` and `dest_y` are valid for at least `n`
+///   `f64` elements.
+/// - The `source_x` and `dest_y` memory regions do not overlap unless `source_x` is also `dest_y`
+///   (which would be an in-place operation on Y, not a standard DAXPY).
+/// - The target CPU supports the necessary x86_64 SSE2 SIMD instructions.
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+#[target_feature(enable = "sse2")]
+pub unsafe fn dtri_maxmy_simd(alpha: f64, source_x: *const f64, dest_y: *mut f64, n: usize) {
+    #[cfg(target_arch = "x86")]
+    use std::arch::x86::{
+        __m128d, _mm_add_pd, _mm_loadu_pd, _mm_mul_pd, _mm_set1_pd, _mm_storeu_pd,
+    };
+    #[cfg(target_arch = "x86_64")]
+    use std::arch::x86_64::{
+        __m128d, _mm_add_pd, _mm_loadu_pd, _mm_mul_pd, _mm_set1_pd, _mm_storeu_pd,
+    };
+
+    unsafe {
+        *dest_y.add(0) = alpha * (*source_x.add(0)) + (*dest_y.add(0));
+    }
+
+    const UNROLL_FACTOR: usize = 2; // Process 2 f64 elements per SIMD operation
+
+    // Broadcast the alpha factor into a 128-bit SIMD register.
+    let alpha_vec: __m128d = _mm_set1_pd(alpha);
+
+    for j in 1..n {
+        let gap = j * n;
+        let remainder = (j + 1) % UNROLL_FACTOR;
+        let unrolled_limit = (j + 1) - remainder;
+        for i in (0..(unrolled_limit)).step_by(UNROLL_FACTOR) {
+            // Load 2 f64 values from vector X
+            let x_vec: __m128d = unsafe { _mm_loadu_pd(source_x.add(gap + i)) };
+            // Load 2 f64 values from vector Y
+            let y_vec: __m128d = unsafe { _mm_loadu_pd(dest_y.add(gap + i)) };
+
+            // Perform alpha * X
+            let alpha_x_vec: __m128d = _mm_mul_pd(alpha_vec, x_vec);
+
+            // Perform (alpha * X) + Y
+            let result_vec: __m128d = _mm_add_pd(alpha_x_vec, y_vec);
+
+            // Store the result back into Y
+            unsafe { _mm_storeu_pd(dest_y.add(gap + i), result_vec) };
+        }
+        if remainder != 0 {
+            unsafe {
+                *dest_y.add(gap + unrolled_limit) = alpha * (*source_x.add(gap + unrolled_limit))
+                    + (*dest_y.add(gap + unrolled_limit));
+            }
+        }
+    }
+}
