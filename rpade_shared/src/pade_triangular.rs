@@ -1,7 +1,7 @@
 use crate::identity::set_identity2;
 use math_helpers::{
-    FnDtri_maxmy, FnScale, dtri_maxmy_avx, dtri_maxmy_fallback, dtri_maxmy_simd,
-    scale_unrolled_avx, scale_unrolled_fallback, scale_unrolled_simd,
+    FnDtriMaxmy, FnScale, dtri_maxmy_avx, dtri_maxmy_fallback, dtri_maxmy_simd, scale_unrolled_avx,
+    scale_unrolled_fallback, scale_unrolled_simd,
 };
 use matlab_blas_wrapper::blas::{dtrmm, dtrsm};
 
@@ -31,7 +31,7 @@ pub unsafe fn pade_triangular(
     let mut Q_rust: Vec<f64> = vec![0.0; total_size];
     let Q = Q_rust.as_mut_ptr();
 
-    let mut dtri_maxmy: FnDtri_maxmy = dtri_maxmy_fallback;
+    let mut dtri_maxmy: FnDtriMaxmy = dtri_maxmy_fallback;
     let mut scale_unrolled: FnScale = scale_unrolled_fallback;
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     {

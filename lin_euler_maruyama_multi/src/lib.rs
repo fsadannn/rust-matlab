@@ -2,7 +2,7 @@
 #![allow(non_snake_case)]
 use std::os::raw::c_int;
 
-use math_helpers::daxpy;
+use math_helpers::{FnDaxpy, daxpy_avx, daxpy_fallback, daxpy_simd};
 use matlab_base_wrapper::{
     mex::mexErrMsgTxt,
     mx::mxCreateDoubleMatrix,
@@ -163,6 +163,16 @@ pub extern "C" fn mexFunction(
     let m: usize = _m;
 
     let n: usize = *tmx.dimensions().iter().max().unwrap();
+
+    let mut daxpy: FnDaxpy = daxpy_fallback;
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    {
+        if is_x86_feature_detected!("avx") && d >= 4 {
+            daxpy = daxpy_avx;
+        } else if is_x86_feature_detected!("sse2") && d >= 2 {
+            daxpy = daxpy_simd;
+        }
+    }
 
     let A: *mut f64 = Amx.get_ptr();
     let a: *mut f64 = amx.get_ptr();

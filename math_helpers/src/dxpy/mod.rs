@@ -6,6 +6,8 @@ pub use self::avx::dxpy_avx;
 pub use self::fallback::dxpy_fallback;
 pub use self::simd::dxpy_simd;
 
+pub type FnDxpy = unsafe fn(*const f64, *mut f64, usize) -> ();
+
 /// Performs the DXP-Y operation: Y = X + Y, using x86_64 SIMD intrinsics if available.
 ///
 /// This operation is equivalent to DAXPY with alpha = 1.0.

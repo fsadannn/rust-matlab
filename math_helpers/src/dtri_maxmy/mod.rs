@@ -6,7 +6,7 @@ pub use self::avx::dtri_maxmy_avx;
 pub use self::fallback::dtri_maxmy_fallback;
 pub use self::simd::dtri_maxmy_simd;
 
-pub type FnDtri_maxmy = unsafe fn(f64, *const f64, *mut f64, usize) -> ();
+pub type FnDtriMaxmy = unsafe fn(f64, *const f64, *mut f64, usize) -> ();
 
 /// Performs the operation for upper triangular column-major stored matrices:
 /// Y = alpha * X + Y, using x86_64 SIMD intrinsics.

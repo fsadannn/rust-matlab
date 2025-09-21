@@ -5,9 +5,9 @@ mod scal;
 
 pub use daxpy::{FnDaxpy, daxpy, daxpy_avx, daxpy_fallback, daxpy_simd};
 pub use dtri_maxmy::{
-    FnDtri_maxmy, dtri_maxmy, dtri_maxmy_avx, dtri_maxmy_fallback, dtri_maxmy_simd,
+    FnDtriMaxmy, dtri_maxmy, dtri_maxmy_avx, dtri_maxmy_fallback, dtri_maxmy_simd,
 };
-pub use dxpy::{dxpy, dxpy_avx, dxpy_fallback, dxpy_simd};
+pub use dxpy::{FnDxpy, dxpy, dxpy_avx, dxpy_fallback, dxpy_simd};
 pub use scal::{
     FnScale, scale_unrolled, scale_unrolled_avx, scale_unrolled_fallback, scale_unrolled_simd,
 };
