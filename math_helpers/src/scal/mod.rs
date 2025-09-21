@@ -6,6 +6,8 @@ pub use self::avx::scale_unrolled_avx;
 pub use self::fallback::scale_unrolled_fallback;
 pub use self::simd::scale_unrolled_simd;
 
+pub type FnScale = unsafe fn(*const f64, *mut f64, usize, f64) -> ();
+
 /// Scales elements from a source array to a destination array by a given factor.
 /// This function uses loop unrolling and x86_64 SIMD intrinsics (128-bit operations)
 /// for potential performance improvement.

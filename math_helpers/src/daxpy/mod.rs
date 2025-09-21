@@ -6,6 +6,8 @@ pub use self::avx::daxpy_avx;
 pub use self::fallback::daxpy_fallback;
 pub use self::simd::daxpy_simd;
 
+pub type FnDaxpy = unsafe fn(f64, *const f64, *mut f64, usize) -> ();
+
 /// Performs the DAXPY operation: Y = alpha * X + Y, using x86_64 SIMD intrinsics.
 ///
 /// # Arguments
