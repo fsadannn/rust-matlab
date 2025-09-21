@@ -1,5 +1,8 @@
-use crate::identity::set_identity2_unrolled as set_identity2;
-use math_helpers::{dtri_maxmy, scale_unrolled};
+use crate::identity::set_identity2;
+use math_helpers::{
+    FnDtriMaxmy, FnScale, dtri_maxmy_avx, dtri_maxmy_fallback, dtri_maxmy_simd, scale_unrolled_avx,
+    scale_unrolled_fallback, scale_unrolled_simd,
+};
 use matlab_blas_wrapper::blas::{dtrmm, dtrsm};
 
 /// This function computes the Padé  approximation of the matrix exponential of `A` to the power `p` and stores it in `P`.
@@ -28,8 +31,21 @@ pub unsafe fn pade_triangular(
     let mut Q_rust: Vec<f64> = vec![0.0; total_size];
     let Q = Q_rust.as_mut_ptr();
 
+    let mut dtri_maxmy: FnDtriMaxmy = dtri_maxmy_fallback;
+    let mut scale_unrolled: FnScale = scale_unrolled_fallback;
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    {
+        if is_x86_feature_detected!("avx") && total_size >= 4 {
+            dtri_maxmy = dtri_maxmy_avx;
+            scale_unrolled = scale_unrolled_avx;
+        } else if is_x86_feature_detected!("sse2") && total_size >= 2 {
+            dtri_maxmy = dtri_maxmy_simd;
+            scale_unrolled = scale_unrolled_simd;
+        }
+    }
+
     /* initialize to identity P, Q */
-    set_identity2(P, Q, nrows, ncols);
+    unsafe { set_identity2(P, Q, nrows, ncols) };
 
     /* s = 2^s; */
     let ps: f64 = 2.0f64.powf(s);

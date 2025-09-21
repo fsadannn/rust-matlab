@@ -7,37 +7,13 @@
 /// * `nrows` - The number of rows in the matrices.
 /// * `ncols` - The number of columns in the matrices.
 #[allow(non_snake_case)]
-pub fn set_identity2_unrolled(P: *mut f64, Q: *mut f64, nrows: usize, ncols: usize) {
+#[inline(always)]
+pub unsafe fn set_identity2(P: *mut f64, Q: *mut f64, nrows: usize, ncols: usize) {
     // Calculate the number of iterations that can be processed in chunks of 4
-    let unrolled_limit = nrows - (nrows % 4);
-
-    // Unrolled loop: processes 4 iterations at a time
-    for i in (0..unrolled_limit).step_by(4) {
-        unsafe {
-            // Process i
-            *P.wrapping_add(i * ncols + i) = 1.0;
-            *Q.wrapping_add(i * ncols + i) = 1.0;
-
-            // Process i + 1
-            *P.wrapping_add((i + 1) * ncols + (i + 1)) = 1.0;
-            *Q.wrapping_add((i + 1) * ncols + (i + 1)) = 1.0;
-
-            // Process i + 2
-            *P.wrapping_add((i + 2) * ncols + (i + 2)) = 1.0;
-            *Q.wrapping_add((i + 2) * ncols + (i + 2)) = 1.0;
-
-            // Process i + 3
-            *P.wrapping_add((i + 3) * ncols + (i + 3)) = 1.0;
-            *Q.wrapping_add((i + 3) * ncols + (i + 3)) = 1.0;
-        }
-    }
-
-    // Cleanup loop: processes any remaining iterations (0 to 3 iterations)
-    for i in unrolled_limit..nrows {
-        unsafe {
-            *P.wrapping_add(i * ncols + i) = 1.0;
-            *Q.wrapping_add(i * ncols + i) = 1.0;
-        }
+    for i in 0..nrows {
+        // Process i
+        unsafe { *P.add(i * ncols + i) = 1.0 };
+        unsafe { *Q.add(i * ncols + i) = 1.0 };
     }
 }
 
@@ -57,7 +33,7 @@ mod tests {
         let p_ptr = p_data.as_mut_ptr();
         let q_ptr = q_data.as_mut_ptr();
 
-        set_identity2_unrolled(p_ptr, q_ptr, nrows, ncols);
+        unsafe { set_identity2(p_ptr, q_ptr, nrows, ncols) };
 
         // Verify the results
         for i in 0..nrows {
@@ -81,7 +57,7 @@ mod tests {
         let p_ptr_mult_4 = p_data_mult_4.as_mut_ptr();
         let q_ptr_mult_4 = q_data_mult_4.as_mut_ptr();
 
-        set_identity2_unrolled(p_ptr_mult_4, q_ptr_mult_4, nrows_mult_4, ncols_mult_4);
+        unsafe { set_identity2(p_ptr_mult_4, q_ptr_mult_4, nrows_mult_4, ncols_mult_4) };
 
         for i in 0..nrows_mult_4 {
             for j in 0..ncols_mult_4 {

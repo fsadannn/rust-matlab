@@ -1,5 +1,8 @@
-use crate::identity::set_identity2_unrolled as set_identity2;
-use math_helpers::{daxpy, scale_unrolled};
+use crate::identity::set_identity2;
+use math_helpers::{
+    FnDaxpy, FnScale, daxpy_avx, daxpy_fallback, daxpy_simd, scale_unrolled_avx,
+    scale_unrolled_fallback, scale_unrolled_simd,
+};
 use matlab_blas_wrapper::blas::dgemm;
 use matlab_lapack_wrapper::lapack::dgesv;
 use std::ops::Rem;
@@ -27,13 +30,26 @@ pub unsafe fn pade(
     const ONE: *const f64 = &(1f64);
     const ZERO: *const f64 = &(0f64);
 
+    let mut daxpy: FnDaxpy = daxpy_fallback;
+    let mut scale_unrolled: FnScale = scale_unrolled_fallback;
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    {
+        if is_x86_feature_detected!("avx") && total_size >= 4 {
+            daxpy = daxpy_avx;
+            scale_unrolled = scale_unrolled_avx;
+        } else if is_x86_feature_detected!("sse2") && total_size >= 2 {
+            daxpy = daxpy_simd;
+            scale_unrolled = scale_unrolled_simd;
+        }
+    }
+
     /* P and Q will store the matrix polynomials, are initialized
      * to identity */
     let mut Q_rust: Vec<f64> = vec![0.0; total_size];
     let Q = Q_rust.as_mut_ptr();
 
     /* initialize to identity P, Q */
-    set_identity2(P, Q, nrows, ncols);
+    unsafe { set_identity2(P, Q, nrows, ncols) };
 
     /* s = 2^s; */
     let ps: f64 = 2.0f64.powf(s);

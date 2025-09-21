@@ -2,7 +2,10 @@
 #![allow(non_snake_case)]
 use std::os::raw::c_int;
 
-use math_helpers::{dxpy, scale_unrolled};
+use math_helpers::{
+    FnDxpy, FnScale, dxpy_avx, dxpy_fallback, dxpy_simd, scale_unrolled_avx,
+    scale_unrolled_fallback, scale_unrolled_simd,
+};
 use matlab_base_wrapper::{
     mex::{mexErrMsgTxt, mexPrintf},
     mx::{mxCreateDoubleMatrix, mxCreateNumericArray},
@@ -119,6 +122,19 @@ pub extern "C" fn mexFunction(
         // Letting the standard library do the work of making Rusts strings C-compatible
         unsafe {
             mexErrMsgTxt("gemv3d: too few output arguments.\n\0".as_ptr());
+        }
+    }
+
+    let mut dxpy: FnDxpy = dxpy_fallback;
+    let mut scale_unrolled: FnScale = scale_unrolled_fallback;
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    {
+        if is_x86_feature_detected!("avx") {
+            dxpy = dxpy_avx;
+            scale_unrolled = scale_unrolled_avx;
+        } else if is_x86_feature_detected!("sse2") {
+            dxpy = dxpy_simd;
+            scale_unrolled = scale_unrolled_simd;
         }
     }
 
