@@ -6,8 +6,14 @@ This repository provides Rust implementations of the Padé approximation for the
 
 This repository is structured as a Cargo workspace and contains the following crates:
 
-- **`rpade`**: A Rust implementation of the diagonal Padé approximation for general matrices.
-- **`rpade_triangular`**: An optimized version of the Padé approximation for upper triangular matrices.
+- **`rpade`**: A Rust implementation of the diagonal Padé approximation for general matrices. This version requires the norm and scaling factor to be provided as parameters.
+- **`rpade_no_norm`**: A version of `rpade` that computes the norm and scaling factor internally.
+- **`rpade_triangular`**: An optimized version of the Padé approximation for upper triangular matrices. This version requires the norm and scaling factor to be provided as parameters.
+- **`rpade_triangular_no_norm`**: A version of `rpade_triangular` that computes the norm and scaling factor internally.
+- **`rpade_shared`**: Internal helper functions shared between the `rpade` crates.
+- **`gemv3d`**: A specialized matrix-vector multiplication routine.
+- **`lin_euler_maruyama_multi`**: An implementation of the Euler-Maruyama method for systems of linear stochastic differential equations.
+- **`lin_taylor_2_1`**: An implementation of a 2,1 Taylor method for systems of linear ordinary differential equations with commutative noises.
 - **`math_helpers`**: A collection of mathematical helper functions used by the other crates.
 - **`matlab_base_wrapper`**: A wrapper for the MATLAB C MEX API.
 - **`matlab_blas_wrapper`**: A wrapper for the BLAS library.
@@ -39,4 +45,4 @@ This repository is structured as a Cargo workspace and contains the following cr
 
 ## Usage
 
-See the `README.md` files in the `rpade` and `rpade_triangular` directories for usage instructions for each specific function.
+See the `README.md` files in the individual crate directories for usage instructions for each specific function.
