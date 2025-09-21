@@ -1,6 +1,11 @@
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 #[target_feature(enable = "sse2")]
-fn _simd_scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scaling_factor: f64) {
+pub unsafe fn scale_unrolled_simd(
+    source: *const f64,
+    dest: *mut f64,
+    size: usize,
+    scaling_factor: f64,
+) {
     // Import x86_64 SIMD intrinsics
     #[cfg(target_arch = "x86")]
     use std::arch::x86::{__m128d, _mm_loadu_pd, _mm_mul_pd, _mm_set1_pd, _mm_storeu_pd};
@@ -47,7 +52,12 @@ fn _simd_scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scaling
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 #[target_feature(enable = "avx")]
-fn _simd256_scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scaling_factor: f64) {
+pub unsafe fn scale_unrolled_avx(
+    source: *const f64,
+    dest: *mut f64,
+    size: usize,
+    scaling_factor: f64,
+) {
     // Import x86_64 SIMD intrinsics
     #[cfg(target_arch = "x86")]
     use std::arch::x86::{
@@ -73,22 +83,19 @@ fn _simd256_scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scal
 
     // Main unrolled loop: processes UNROLL_FACTOR elements at a time using SIMD.
     for i in (0..unrolled_limit).step_by(UNROLL_FACTOR) {
-        unsafe {
-            // Load 4 f64 values from the source into a 256-bit register.
-            // _mm256_loadu_pd is for unaligned loads.
-            let src_vec: __m256d = _mm256_loadu_pd(source.add(i));
+        // Load 4 f64 values from the source into a 256-bit register.
+        // _mm256_loadu_pd is for unaligned loads.
+        let src_vec: __m256d = unsafe { _mm256_loadu_pd(source.add(i)) };
 
-            // Multiply the loaded source vector by the scaling factor vector.
-            let result_vec: __m256d = _mm256_mul_pd(src_vec, factor_vec);
+        // Multiply the loaded source vector by the scaling factor vector.
+        let result_vec: __m256d = _mm256_mul_pd(src_vec, factor_vec);
 
-            // Store the 4 resulting f64 values into the destination.
-            // _mm256_storeu_pd is for unaligned stores.
-            _mm256_storeu_pd(dest.add(i), result_vec);
-        }
+        // Store the 4 resulting f64 values into the destination.
+        // _mm256_storeu_pd is for unaligned stores.
+        unsafe { _mm256_storeu_pd(dest.add(i), result_vec) };
     }
 
     match remainder {
-        0 => (),
         1 => unsafe {
             *dest.add(unrolled_limit) = *source.add(unrolled_limit) * scaling_factor;
         },
@@ -105,7 +112,12 @@ fn _simd256_scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scal
     }
 }
 
-fn _scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scaling_factor: f64) {
+pub unsafe fn scale_unrolled_fallback(
+    source: *const f64,
+    dest: *mut f64,
+    size: usize,
+    scaling_factor: f64,
+) {
     // Define the unrolling factor. We'll process 4 elements per iteration.
     const UNROLL_FACTOR: usize = 4;
 
@@ -115,19 +127,17 @@ fn _scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scaling_fact
 
     // Main unrolled loop: processes UNROLL_FACTOR elements at a time.
     for i in (0..unrolled_limit).step_by(UNROLL_FACTOR) {
-        unsafe {
-            // Process element i
-            *dest.add(i) = *source.add(i) * scaling_factor;
+        // Process element i
+        unsafe { *dest.add(i) = *source.add(i) * scaling_factor };
 
-            // Process element i + 1
-            *dest.add(i + 1) = *source.add(i + 1) * scaling_factor;
+        // Process element i + 1
+        unsafe { *dest.add(i + 1) = *source.add(i + 1) * scaling_factor };
 
-            // Process element i + 2
-            *dest.add(i + 2) = *source.add(i + 2) * scaling_factor;
+        // Process element i + 2
+        unsafe { *dest.add(i + 2) = *source.add(i + 2) * scaling_factor };
 
-            // Process element i + 3
-            *dest.add(i + 3) = *source.add(i + 3) * scaling_factor;
-        }
+        // Process element i + 3
+        unsafe { *dest.add(i + 3) = *source.add(i + 3) * scaling_factor };
     }
 
     // Cleanup loop: processes any remaining elements (0 to UNROLL_FACTOR - 1 elements).
@@ -162,17 +172,15 @@ fn _scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scaling_fact
 pub unsafe fn scale_unrolled(source: *const f64, dest: *mut f64, size: usize, scaling_factor: f64) {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     {
-        use crate::detec_features::{HAS_AVX, HAS_SSE2};
-
-        if HAS_AVX.load(std::sync::atomic::Ordering::Relaxed) && size >= 4 {
-            return unsafe { _simd256_scale_unrolled(source, dest, size, scaling_factor) };
+        if is_x86_feature_detected!("avx") && size >= 4 {
+            return unsafe { scale_unrolled_avx(source, dest, size, scaling_factor) };
         }
-        if HAS_SSE2.load(std::sync::atomic::Ordering::Relaxed) && size >= 2 {
-            return unsafe { _simd_scale_unrolled(source, dest, size, scaling_factor) };
+        if is_x86_feature_detected!("sse2") && size >= 2 {
+            return unsafe { scale_unrolled_simd(source, dest, size, scaling_factor) };
         }
     }
 
-    _scale_unrolled(source, dest, size, scaling_factor);
+    unsafe { scale_unrolled_fallback(source, dest, size, scaling_factor) }
 }
 
 // --- Example Usage and Tests ---

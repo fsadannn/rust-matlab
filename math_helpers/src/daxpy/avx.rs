@@ -67,3 +67,84 @@ pub fn daxpy_avx(alpha: f64, source_x: *const f64, dest_y: *mut f64, size: usize
         _ => (),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    fn test_daxpy_avx_exact_multiple() {
+        if is_x86_feature_detected!("avx") {
+            let size = 8; // Multiple of 4
+            let alpha = 2.0;
+            let source_x = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0];
+            let mut dest_y = vec![10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0];
+
+            let x_ptr = source_x.as_ptr();
+            let y_ptr = dest_y.as_mut_ptr();
+
+            unsafe { daxpy_avx(alpha, x_ptr, y_ptr, size) };
+
+            let expected = vec![12.0, 24.0, 36.0, 48.0, 60.0, 72.0, 84.0, 96.0];
+            assert_eq!(dest_y, expected);
+        }
+    }
+
+    #[test]
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    fn test_daxpy_avx_remainder() {
+        if is_x86_feature_detected!("avx") {
+            let size = 7; // Not a multiple of 4
+            let alpha = -1.0;
+            let source_x = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0];
+            let mut dest_y = vec![10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0];
+
+            let x_ptr = source_x.as_ptr();
+            let y_ptr = dest_y.as_mut_ptr();
+
+            unsafe { daxpy_avx(alpha, x_ptr, y_ptr, size) };
+
+            let expected = vec![9.0, 18.0, 27.0, 36.0, 45.0, 54.0, 63.0];
+            assert_eq!(dest_y, expected);
+        }
+    }
+
+    #[test]
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    fn test_daxpy_avx_zero_size() {
+        if is_x86_feature_detected!("avx") {
+            let size = 0;
+            let alpha = 5.0;
+            let source_x: Vec<f64> = vec![];
+            let mut dest_y: Vec<f64> = vec![];
+
+            let x_ptr = source_x.as_ptr();
+            let y_ptr = dest_y.as_mut_ptr();
+
+            unsafe { daxpy_avx(alpha, x_ptr, y_ptr, size) };
+
+            let expected: Vec<f64> = vec![];
+            assert_eq!(dest_y, expected);
+        }
+    }
+
+    #[test]
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    fn test_daxpy_avx_alpha_zero() {
+        if is_x86_feature_detected!("avx") {
+            let size = 5;
+            let alpha = 0.0;
+            let source_x = [1.0, 2.0, 3.0, 4.0, 5.0];
+            let mut dest_y = vec![10.0, 20.0, 30.0, 40.0, 50.0];
+
+            let x_ptr = source_x.as_ptr();
+            let y_ptr = dest_y.as_mut_ptr();
+
+            unsafe { daxpy_avx(alpha, x_ptr, y_ptr, size) };
+
+            let expected = vec![10.0, 20.0, 30.0, 40.0, 50.0];
+            assert_eq!(dest_y, expected);
+        }
+    }
+}

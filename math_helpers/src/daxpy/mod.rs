@@ -36,7 +36,7 @@ pub unsafe fn daxpy(alpha: f64, source_x: *const f64, dest_y: *mut f64, size: us
         }
     }
 
-    daxpy_fallback(alpha, source_x, dest_y, size);
+    unsafe { daxpy_fallback(alpha, source_x, dest_y, size) }
 }
 
 // --- Example Usage and Tests ---
