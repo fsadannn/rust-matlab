@@ -27,21 +27,21 @@ pub extern "C" fn mexFunction(
     if nrhs != 7 {
         // Letting the standard library do the work of making Rusts strings C-compatible
         unsafe {
-            mexErrMsgTxt("lin_euler_maruyama_multi: 7 input arguments required.\n\0".as_ptr());
+            mexErrMsgTxt("lin_taylor_2_1: 7 input arguments required.\n\0".as_ptr());
         }
     }
 
     if nlhs > 1 {
         // Letting the standard library do the work of making Rusts strings C-compatible
         unsafe {
-            mexErrMsgTxt("lin_euler_maruyama_multi: too many output arguments.\n\0".as_ptr());
+            mexErrMsgTxt("lin_taylor_2_1: too many output arguments.\n\0".as_ptr());
         }
     }
 
     if nlhs < 1 {
         // Letting the standard library do the work of making Rusts strings C-compatible
         unsafe {
-            mexErrMsgTxt("lin_euler_maruyama_multi: too few output arguments.\n\0".as_ptr());
+            mexErrMsgTxt("lin_taylor_2_1: too few output arguments.\n\0".as_ptr());
         }
     }
 
@@ -49,9 +49,7 @@ pub extern "C" fn mexFunction(
         Some(a) => a,
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"lin_euler_maruyama_multi: first argument must be a mxArray.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"lin_taylor_2_1: first argument must be a mxArray.\n\0".as_ptr());
             }
             return;
         }
@@ -60,9 +58,7 @@ pub extern "C" fn mexFunction(
         Some(a) => a,
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"lin_euler_maruyama_multi: second argument must be a mxArray.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"lin_taylor_2_1: second argument must be a mxArray.\n\0".as_ptr());
             }
             return;
         }
@@ -71,9 +67,7 @@ pub extern "C" fn mexFunction(
         Some(a) => a,
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"lin_euler_maruyama_multi: second argument must be a mxArray.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"lin_taylor_2_1: second argument must be a mxArray.\n\0".as_ptr());
             }
             return;
         }
@@ -82,9 +76,7 @@ pub extern "C" fn mexFunction(
         Some(a) => a,
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"lin_euler_maruyama_multi: second argument must be a mxArray.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"lin_taylor_2_1: second argument must be a mxArray.\n\0".as_ptr());
             }
             return;
         }
@@ -93,9 +85,7 @@ pub extern "C" fn mexFunction(
         Some(a) => a,
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"lin_euler_maruyama_multi: second argument must be a mxArray.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"lin_taylor_2_1: second argument must be a mxArray.\n\0".as_ptr());
             }
             return;
         }
@@ -104,9 +94,7 @@ pub extern "C" fn mexFunction(
         Some(a) => a,
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"lin_euler_maruyama_multi: second argument must be a mxArray.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"lin_taylor_2_1: second argument must be a mxArray.\n\0".as_ptr());
             }
             return;
         }
@@ -115,9 +103,7 @@ pub extern "C" fn mexFunction(
         Some(a) => a,
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"lin_euler_maruyama_multi: second argument must be a mxArray.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"lin_taylor_2_1: second argument must be a mxArray.\n\0".as_ptr());
             }
             return;
         }
@@ -127,18 +113,14 @@ pub extern "C" fn mexFunction(
     let d = *dimensions.first().unwrap_or(&0);
     if dimensions.len() != 2 || d != *dimensions.get(1).unwrap_or(&0) {
         unsafe {
-            mexErrMsgTxt(
-                b"lin_euler_maruyama_multi: 1st argument must be a square matrix.\n\0".as_ptr(),
-            );
+            mexErrMsgTxt(b"lin_taylor_2_1: 1st argument must be a square matrix.\n\0".as_ptr());
         }
         return;
     }
 
     if *x0mx.dimensions().iter().max().unwrap_or(&1) != d {
         unsafe {
-            mexErrMsgTxt(
-                b"lin_euler_maruyama_multi: 5th argument must be a square matrix.\n\0".as_ptr(),
-            );
+            mexErrMsgTxt(b"lin_taylor_2_1: 5th argument must be a square matrix.\n\0".as_ptr());
         }
         return;
     }
@@ -147,7 +129,7 @@ pub extern "C" fn mexFunction(
     if dimensions.len() > 3 || d != *dimensions.get(1).unwrap_or(&0) {
         unsafe {
             mexErrMsgTxt(
-                b"lin_euler_maruyama_multi: 3rd argument must be a square matrix or 3d matrix with square pages.\n\0".as_ptr(),
+                b"lin_taylor_2_1: 3rd argument must be a square matrix or 3d matrix with square pages.\n\0".as_ptr(),
             );
         }
         return;

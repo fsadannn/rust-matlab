@@ -13,7 +13,7 @@ pub unsafe fn daxpy_fallback(alpha: f64, source_x: *const f64, dest_y: *mut f64,
     // Fallback to scalar operations if not on x86_64
     for i in 0..size {
         unsafe {
-            *dest_y.add(i) = alpha * (*source_x.add(i)) + (*dest_y.add(i));
+            *dest_y.add(i) += alpha * (*source_x.add(i));
         }
     }
 }

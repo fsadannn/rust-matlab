@@ -1,0 +1,11 @@
+[package]
+name = "ito_double_integral_system"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+matlab_base_wrapper = {path = "../matlab_base_wrapper"}
+
+
+[lib]
+crate-type=["dylib"]
