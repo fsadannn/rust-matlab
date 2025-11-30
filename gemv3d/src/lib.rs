@@ -215,6 +215,19 @@ pub extern "C" fn mexFunction(
                     unsafe { dxpy(y.add(page_size * i), res.add(page_size * i), page_size) };
                 }
             }
+            1 => {
+                if !ymx.is_scalar() || ymx.get_scalar() != 0f64 {
+                    unsafe {
+                        mexPrintf(
+                            "xdism: %d - %d - %d\n\0".as_ptr(),
+                            ydimensions[0],
+                            ydimensions[1],
+                            *ydimensions.get(2).unwrap_or(&1),
+                        )
+                    };
+                    unsafe { mexErrMsgTxt("gemv3d: invalid 3rd term size (other).\n\0".as_ptr()) };
+                }
+            }
             _ => {
                 unsafe {
                     mexPrintf(
@@ -353,7 +366,7 @@ pub extern "C" fn mexFunction(
     }
 
     // case: 3d * 3d
-    // multiply across the pages axis each 2d matrices resulting in a 3d matrix of N *  x pages
+    // multiply across the pages axis each 2d matrices resulting in a 3d matrix of N * N * x pages
     if xdimensions.len() == 3 {
         let mut dims: [usize; 3] = [0, 0, 0];
         dims[0] = nrows;
@@ -451,6 +464,19 @@ pub extern "C" fn mexFunction(
                             rows,
                         )
                     };
+                }
+            }
+            1 => {
+                if !ymx.is_scalar() || ymx.get_scalar() != 0f64 {
+                    unsafe {
+                        mexPrintf(
+                            "xdism: %d - %d - %d\n\0".as_ptr(),
+                            ydimensions[0],
+                            ydimensions[1],
+                            *ydimensions.get(2).unwrap_or(&1),
+                        )
+                    };
+                    unsafe { mexErrMsgTxt("gemv3d: invalid 3rd term size 1.\n\0".as_ptr()) };
                 }
             }
             _ => {
