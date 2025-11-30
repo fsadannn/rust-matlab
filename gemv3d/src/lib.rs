@@ -105,7 +105,7 @@ pub extern "C" fn mexFunction(
         unsafe { mexErrMsgTxt("gemv3d: Dimensions mismatch!\n\0".as_ptr()) };
     }
 
-    if !ymx.is_double() || *ymx.dimensions().get(1).unwrap_or(&0) != pages {
+    if !ymx.is_double() || (*ymx.dimensions().get(1).unwrap_or(&0) != pages && !ymx.is_scalar()) {
         unsafe {
             mexErrMsgTxt("gemv3d: Third argument must be a matrix with the same number of columns as the pages of the first argument.\n\0".as_ptr())
         };
