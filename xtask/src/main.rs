@@ -34,8 +34,21 @@ dist            builds application and copy dll as matlab mex files
 }
 
 fn dist() -> Result<(), DynError> {
-    let _ = fs::remove_dir_all(dist_dir());
-    fs::create_dir_all(dist_dir())?;
+    let dist_dir = dist_dir();
+    if dist_dir.exists() {
+        for entry in fs::read_dir(dist_dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_file()
+                && let Some(extension) = path.extension()
+                && (extension == "mexa64" || extension == "mexw64")
+            {
+                fs::remove_file(path)?;
+            }
+        }
+    } else {
+        fs::create_dir_all(dist_dir)?;
+    }
 
     dist_binary()?;
 

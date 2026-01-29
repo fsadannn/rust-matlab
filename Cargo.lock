@@ -257,6 +257,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "ll_ginzburg_landau"
+version = "0.1.0"
+dependencies = [
+ "matlab_base_wrapper",
+]
+
+[[package]]
 name = "log"
 version = "0.4.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
