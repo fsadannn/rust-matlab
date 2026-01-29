@@ -86,7 +86,7 @@ pub extern "C" fn mexFunction(
         }
     };
 
-    if hmx.is_scalar() == false {
+    if !hmx.is_scalar() {
         unsafe {
             mexErrMsgTxt(
                 b"ito_double_integral_system: second argument must be a scalar.\n\0".as_ptr(),

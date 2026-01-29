@@ -1,5 +1,14 @@
 #[inline(always)]
 pub fn ito_double_integral(n: usize, m: usize, dW: *const f64, h: f64, res: *mut f64) {
+    if m == 1 {
+        let mut sum = 0f64;
+        for i in 0..n {
+            sum += unsafe { *dW.add(i) };
+        }
+        unsafe { *res.add(0) = 0.5f64 * (sum * sum - h) };
+        return;
+    }
+
     let mut acc: Vec<f64> = vec![0f64; m];
     let mut sum: Vec<f64> = vec![0f64; m];
     assert!(acc.len() == m);
