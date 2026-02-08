@@ -233,12 +233,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "lambert_3_15"
+name = "lambert_2_15_additive"
 version = "0.1.0"
 dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
- "matlab_blas_wrapper",
 ]
 
 [[package]]

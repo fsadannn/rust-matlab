@@ -71,7 +71,7 @@ pub fn solve_2x2(a: &[f64; 4], b: &mut [f64; 4]) {
     b[3] = x11;
 }
 
-fn scale_fallback(a: &[f64; 4], out: &mut [f64; 4], factor: f64) {
+fn scale_fallback_2x2(a: &[f64; 4], out: &mut [f64; 4], factor: f64) {
     out[0] = a[0] * factor;
     out[1] = a[1] * factor;
     out[2] = a[2] * factor;
@@ -80,7 +80,7 @@ fn scale_fallback(a: &[f64; 4], out: &mut [f64; 4], factor: f64) {
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 #[target_feature(enable = "avx")]
-fn scale_avx(a: &[f64; 4], out: &mut [f64; 4], factor: f64) {
+fn scale_avx_2x2(a: &[f64; 4], out: &mut [f64; 4], factor: f64) {
     #[cfg(target_arch = "x86")]
     use std::arch::x86::{
         __m256d, _mm256_loadu_pd, _mm256_mul_pd, _mm256_set1_pd, _mm256_storeu_pd,
@@ -98,7 +98,7 @@ fn scale_avx(a: &[f64; 4], out: &mut [f64; 4], factor: f64) {
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 #[target_feature(enable = "sse2")]
-fn scale_sse(a: &[f64; 4], out: &mut [f64; 4], factor: f64) {
+fn scale_sse_2x2(a: &[f64; 4], out: &mut [f64; 4], factor: f64) {
     #[cfg(target_arch = "x86")]
     use std::arch::x86::{__m128d, _mm_loadu_pd, _mm_mul_pd, _mm_set1_pd, _mm_storeu_pd};
     #[cfg(target_arch = "x86_64")]
@@ -115,7 +115,7 @@ fn scale_sse(a: &[f64; 4], out: &mut [f64; 4], factor: f64) {
     unsafe { _mm_storeu_pd(out.as_mut_ptr().add(2), result_vec) };
 }
 
-fn daxpy_fallback(alpha: f64, a: &[f64; 4], out: &mut [f64; 4]) {
+fn daxpy_fallback_2x2(alpha: f64, a: &[f64; 4], out: &mut [f64; 4]) {
     out[0] += a[0] * alpha;
     out[1] += a[1] * alpha;
     out[2] += a[2] * alpha;
@@ -124,7 +124,7 @@ fn daxpy_fallback(alpha: f64, a: &[f64; 4], out: &mut [f64; 4]) {
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 #[target_feature(enable = "avx")]
-fn daxpy_avx(alpha: f64, a: &[f64; 4], out: &mut [f64; 4]) {
+fn daxpy_avx_2x2(alpha: f64, a: &[f64; 4], out: &mut [f64; 4]) {
     #[cfg(target_arch = "x86")]
     use std::arch::x86::{
         __m256d, _mm256_add_pd, _mm256_loadu_pd, _mm256_mul_pd, _mm256_set1_pd, _mm256_storeu_pd,
@@ -143,7 +143,7 @@ fn daxpy_avx(alpha: f64, a: &[f64; 4], out: &mut [f64; 4]) {
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 #[target_feature(enable = "sse2")]
-fn daxpy_sse(alpha: f64, a: &[f64; 4], out: &mut [f64; 4]) {
+fn daxpy_sse_2x2(alpha: f64, a: &[f64; 4], out: &mut [f64; 4]) {
     #[cfg(target_arch = "x86")]
     use std::arch::x86::{
         __m128d, _mm_add_pd, _mm_loadu_pd, _mm_mul_pd, _mm_set1_pd, _mm_storeu_pd,
@@ -173,8 +173,8 @@ type FnDaxpy = unsafe fn(f64, &[f64; 4], &mut [f64; 4]) -> ();
 /// Input: `[a, b, c, d]` represents the matrix [[a, c], [b, d]]
 #[allow(non_snake_case)]
 pub fn matrix_exp_2x2(A: &[f64; 4], p: u32) -> [f64; 4] {
-    let mut daxpy: FnDaxpy = daxpy_fallback;
-    let mut scale: FnScale = scale_fallback;
+    let mut daxpy: FnDaxpy = daxpy_fallback_2x2;
+    let mut scale: FnScale = scale_fallback_2x2;
     let mut dgemm: FnDGEM22 = dgemm_2x2_fallback;
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     {
@@ -184,13 +184,13 @@ pub fn matrix_exp_2x2(A: &[f64; 4], p: u32) -> [f64; 4] {
             dgemm = dgemm_2x2_avx2
         }
         if is_x86_feature_detected!("avx") {
-            daxpy = daxpy_avx;
-            scale = scale_avx;
+            daxpy = daxpy_avx_2x2;
+            scale = scale_avx_2x2;
         } else if is_x86_feature_detected!("sse2") {
             use crate::dgemm_2x2_sse2;
 
-            daxpy = daxpy_sse;
-            scale = scale_sse;
+            daxpy = daxpy_sse_2x2;
+            scale = scale_sse_2x2;
             dgemm = dgemm_2x2_sse2;
         }
     }
