@@ -1,10 +1,12 @@
 [package]
-name = "ll_ginzburg_landau"
+name = "lambert_3_15"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 matlab_base_wrapper = {path = "../matlab_base_wrapper"}
+matlab_blas_wrapper = {path = "../matlab_blas_wrapper"}
+math_helpers = {path = "../math_helpers"}
 
 [lib]
 crate-type=["dylib"]

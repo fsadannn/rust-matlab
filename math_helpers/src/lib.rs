@@ -1,4 +1,5 @@
 mod daxpy;
+mod dgemm_2x2;
 mod dtri_maxmy;
 mod dxpy;
 mod scal;

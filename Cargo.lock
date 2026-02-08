@@ -233,6 +233,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "lambert_3_15"
+version = "0.1.0"
+dependencies = [
+ "math_helpers",
+ "matlab_base_wrapper",
+ "matlab_blas_wrapper",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.176"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -254,13 +263,6 @@ dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
  "matlab_blas_wrapper",
-]
-
-[[package]]
-name = "ll_ginzburg_landau"
-version = "0.1.0"
-dependencies = [
- "matlab_base_wrapper",
 ]
 
 [[package]]
