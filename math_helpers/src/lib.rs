@@ -2,9 +2,11 @@ mod daxpy;
 mod dgemm_2x2;
 mod dtri_maxmy;
 mod dxpy;
+mod matrix_exp_22;
 mod scal;
 
 pub use daxpy::{FnDaxpy, daxpy, daxpy_avx, daxpy_fallback, daxpy_simd};
+pub use dgemm_2x2::{FnDGEM22, dgemm_2x2, dgemm_2x2_avx2, dgemm_2x2_fallback, dgemm_2x2_sse2};
 pub use dtri_maxmy::{
     FnDtriMaxmy, dtri_maxmy, dtri_maxmy_avx, dtri_maxmy_fallback, dtri_maxmy_simd,
 };
