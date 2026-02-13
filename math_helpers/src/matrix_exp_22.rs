@@ -236,8 +236,6 @@ pub fn matrix_exp_2x2(A: &[f64; 4], p: u32) -> [f64; 4] {
             const MC2: f64 = -C2;
             unsafe { daxpy(C2, &Ak, &mut P) };
             unsafe { daxpy(MC2, &Ak, &mut Q) };
-            println!("P: {P:?}");
-            println!("Q: {Q:?}");
         }
         4 => {
             unsafe { dgemm(copyofA.as_ptr(), Ak.as_ptr(), Aux.as_mut_ptr()) };
