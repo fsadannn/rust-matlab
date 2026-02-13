@@ -1,5 +1,3 @@
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-#[target_feature(enable = "sse2")]
 /// Computes the product of two 2x2 matrices using SSE2 instructions.
 ///
 /// Matrices are assumed to be in column-major order.
@@ -8,6 +6,8 @@
 /// - `a`, `b`, and `out` must be valid pointers to at least 4 `f64` elements (2x2 matrix).
 /// - `out` must be writable.
 /// - The CPU must support SSE2 instructions.
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+#[target_feature(enable = "sse2")]
 pub unsafe fn dgemm_2x2_sse2(a: *const f64, b: *const f64, out: *mut f64) {
     #[cfg(target_arch = "x86")]
     use std::arch::x86::{_mm_add_pd, _mm_load1_pd, _mm_loadu_pd, _mm_mul_pd, _mm_storeu_pd};

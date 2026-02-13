@@ -475,6 +475,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "rpade_no_norm_2x2"
+version = "0.1.0"
+dependencies = [
+ "math_helpers",
+ "matlab_base_wrapper",
+]
+
+[[package]]
 name = "rpade_shared"
 version = "0.1.0"
 dependencies = [

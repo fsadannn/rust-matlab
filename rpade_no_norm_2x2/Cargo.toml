@@ -1,0 +1,12 @@
+[package]
+name = "rpade_no_norm_2x2"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+matlab_base_wrapper = {path = "../matlab_base_wrapper"}
+math_helpers ={ path = "../math_helpers"}
+
+
+[lib]
+crate-type=["dylib"]

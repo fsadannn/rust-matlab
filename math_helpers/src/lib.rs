@@ -5,6 +5,15 @@ mod dxpy;
 pub mod matrix_exp_22;
 mod scal;
 
+#[cfg(not(any(target_arch = "x86", target_arch = "x86_64", target_feature = "sse2")))]
+#[deny(warnings)]
+compile_error!("This module only supports x86 and x86_64 architectures with sse2");
+
+#[cfg(target_arch = "x86")]
+use std::arch::x86::__m128d;
+#[cfg(target_arch = "x86_64")]
+use std::arch::x86_64::__m128d;
+
 pub use daxpy::{FnDaxpy, daxpy, daxpy_avx, daxpy_fallback, daxpy_simd};
 pub use dgemm_2x2::{FnDGEM22, dgemm_2x2, dgemm_2x2_avx2, dgemm_2x2_fallback, dgemm_2x2_sse2};
 pub use dtri_maxmy::{
@@ -35,4 +44,10 @@ pub fn frexp(x: f64) -> (f64, i32) {
     y &= 0x800fffffffffffff;
     y |= 0x3fe0000000000000;
     (f64::from_bits(y), e)
+}
+
+#[repr(C)]
+pub union M128dAsF64s {
+    pub simd: __m128d,
+    pub scalars: [f64; 2],
 }

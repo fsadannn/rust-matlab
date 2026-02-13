@@ -1,5 +1,3 @@
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-#[target_feature(enable = "avx2", enable = "fma")]
 /// Computes the product of two 2x2 matrices using AVX2 and FMA instructions.
 ///
 /// Matrices are assumed to be in column-major order.
@@ -8,6 +6,8 @@
 /// - `a`, `b`, and `out` must be valid pointers to at least 4 `f64` elements (2x2 matrix).
 /// - `out` must be writable.
 /// - The CPU must support AVX2 and FMA instructions.
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+#[target_feature(enable = "avx2", enable = "fma")]
 pub unsafe fn dgemm_2x2_avx2(a: *const f64, b: *const f64, out: *mut f64) {
     #[cfg(target_arch = "x86")]
     use std::arch::x86::{
