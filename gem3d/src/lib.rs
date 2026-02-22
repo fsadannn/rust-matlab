@@ -145,6 +145,7 @@ pub extern "C" fn mexFunction(
             )
         };
     }
+    unsafe { *plhs.add(0) = ans_matrix };
     let res = unsafe { ans_matrix.as_mut().unwrap().get_ptr() };
 
     match dgem3d(
