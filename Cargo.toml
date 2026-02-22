@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = [ "math_helpers", "matlab_base_wrapper",  "matlab_blas_wrapper", "matlab_lapack_wrapper","rpade_shared","rpade","rpade_no_norm","rpade_triangular","rpade_triangular_no_norm","gemv3d","lin_euler_maruyama_multi","lin_taylor_2_1","ito_double_integral_system", "xtask", "lambert_2_15_additive","rpade_no_norm_2x2"]
+members = [ "math_helpers", "matlab_base_wrapper",  "matlab_blas_wrapper", "matlab_lapack_wrapper","rpade_shared","rpade","rpade_no_norm","rpade_triangular","rpade_triangular_no_norm","gem3d","lin_euler_maruyama_multi","lin_taylor_2_1","ito_double_integral_system", "xtask", "lambert_2_15_additive","rpade_no_norm_2x2"]
 
 
 

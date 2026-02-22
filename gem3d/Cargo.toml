@@ -1,5 +1,5 @@
 [package]
-name = "gemv3d"
+name = "gem3d"
 version = "0.1.0"
 edition = "2024"
 
