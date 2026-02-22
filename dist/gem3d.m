@@ -1,5 +1,5 @@
 function ans = gem3d(A, B, y)
-% GEMV3D - 3D matrix-matrix or matrix-vector multiplication.
+% GEM3D - 3D matrix-matrix or matrix-vector multiplication.
 %
 %   This is a compiled rust function. The documentation is extracted from the rust code.
 %

@@ -57,6 +57,11 @@ pub fn dgem3d(
         return Err("Dimension mismatch for A*B and C".into());
     }
 
+    if cross_page_dims[0] == 1 && cross_page_dims[1] == 1 && cross_page_dims[2] == 1 {
+        unsafe { *out = *A * (*B) + *y };
+        return Ok(());
+    }
+
     // if has sum term then we copy over output
     if y_dims.iter().sum::<usize>() == 3 && unsafe { *y.add(0) == 0.0 } {
         if y_dims[2] == cross_page_dims[2] {
