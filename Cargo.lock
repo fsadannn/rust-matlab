@@ -171,7 +171,7 @@ checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
 
 [[package]]
 name = "gem3d"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
@@ -600,6 +600,14 @@ name = "unicode-ident"
 version = "1.0.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f63a545481291138910575129486daeaf8ac54aee4387fe7906919f7830c7d9d"
+
+[[package]]
+name = "vander_pol_2_15_mul"
+version = "0.1.0"
+dependencies = [
+ "math_helpers",
+ "matlab_base_wrapper",
+]
 
 [[package]]
 name = "walkdir"
