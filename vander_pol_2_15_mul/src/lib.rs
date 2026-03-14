@@ -299,7 +299,7 @@ pub extern "C" fn mexFunction(
                 acc = _mm_fmadd_pd(b.simd, v_I1, acc);
                 // acc = (Aa * h2_2) + acc
                 acc = _mm_fmadd_pd(Aa.simd, h2_2_vec, acc);
-                // acc = (Aa * h2_2) + acc
+                // acc = (Ab * I_10) + acc
                 yn.simd = _mm_fmadd_pd(Ab.simd, v_I10, acc);
 
                 // 6. Store result
