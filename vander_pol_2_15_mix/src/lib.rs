@@ -50,10 +50,10 @@ pub extern "C" fn mexFunction(
         return;
     }
 
-    if nrhs != 7 {
+    if nrhs != 9 {
         // Letting the standard library do the work of making Rusts strings C-compatible
         unsafe {
-            mexErrMsgTxt("vander_pol_2_15_aditive: 7 input arguments required.\n\0".as_ptr());
+            mexErrMsgTxt("vander_pol_2_15_aditive: 9 input arguments required.\n\0".as_ptr());
         }
     }
 
@@ -96,7 +96,7 @@ pub extern "C" fn mexFunction(
             if !a.is_scalar() {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: first argument must be a number.\n\0".as_ptr(),
+                        b"vander_pol_2_15_aditive: 2nd argument must be a number.\n\0".as_ptr(),
                     );
                 }
             }
@@ -105,18 +105,18 @@ pub extern "C" fn mexFunction(
         None => {
             unsafe {
                 mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: first argument must be a number.\n\0".as_ptr(),
+                    b"vander_pol_2_15_aditive: 2nd argument must be a number.\n\0".as_ptr(),
                 );
             }
             return;
         }
     };
-    let sigma_1 = match rhslice.get(2) {
+    let a_const = match rhslice.get(2) {
         Some(a) => {
             if !a.is_scalar() {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: first argument must be a number.\n\0".as_ptr(),
+                        b"vander_pol_2_15_aditive: 3rd argument must be a number.\n\0".as_ptr(),
                     );
                 }
             }
@@ -125,20 +125,60 @@ pub extern "C" fn mexFunction(
         None => {
             unsafe {
                 mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: first argument must be a number.\n\0".as_ptr(),
+                    b"vander_pol_2_15_aditive: 3rd argument must be a number.\n\0".as_ptr(),
                 );
             }
             return;
         }
     };
-    let x0 = match rhslice.get(3) {
+
+    let sigma_1 = match rhslice.get(3) {
+        Some(a) => {
+            if !a.is_scalar() {
+                unsafe {
+                    mexErrMsgTxt(
+                        b"vander_pol_2_15_aditive: 4th argument must be a number.\n\0".as_ptr(),
+                    );
+                }
+            }
+            a.get_scalar()
+        }
+        None => {
+            unsafe {
+                mexErrMsgTxt(
+                    b"vander_pol_2_15_aditive: 4th argument must be a number.\n\0".as_ptr(),
+                );
+            }
+            return;
+        }
+    };
+    let sigma_2 = match rhslice.get(4) {
+        Some(a) => {
+            if !a.is_scalar() {
+                unsafe {
+                    mexErrMsgTxt(
+                        b"vander_pol_2_15_aditive: 5th argument must be a number.\n\0".as_ptr(),
+                    );
+                }
+            }
+            a.get_scalar()
+        }
+        None => {
+            unsafe {
+                mexErrMsgTxt(
+                    b"vander_pol_2_15_aditive: 5th argument must be a number.\n\0".as_ptr(),
+                );
+            }
+            return;
+        }
+    };
+    let x0 = match rhslice.get(5) {
         Some(a) => {
             let max_dim = *a.dimensions().iter().max().unwrap_or(&0);
             if max_dim != 2 {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: second argument must be a vector of 2 components.\n\0"
-                            .as_ptr(),
+                        b"vander_pol_2_15_aditive: 6th argument must be a vector.\n\0".as_ptr(),
                     );
                 }
             }
@@ -147,19 +187,19 @@ pub extern "C" fn mexFunction(
         None => {
             unsafe {
                 mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: second argument must be a vector.\n\0".as_ptr(),
+                    b"vander_pol_2_15_aditive: 6th argument must be a vector.\n\0".as_ptr(),
                 );
             }
             return;
         }
     };
 
-    let (t, n) = match rhslice.get(4) {
+    let (t, n) = match rhslice.get(6) {
         Some(a) => {
             if a.dimensions().len() > 2 {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: 3rd argument must be a vector.\n\0".as_ptr(),
+                        b"vander_pol_2_15_aditive: 7th argument must be a vector.\n\0".as_ptr(),
                     );
                 }
             }
@@ -169,19 +209,19 @@ pub extern "C" fn mexFunction(
         None => {
             unsafe {
                 mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: 3rd argument must be a vector.\n\0".as_ptr(),
+                    b"vander_pol_2_15_aditive: 7th argument must be a vector.\n\0".as_ptr(),
                 );
             }
             return;
         }
     };
 
-    let dW = match rhslice.get(5) {
+    let dW = match rhslice.get(7) {
         Some(a) => {
             if a.dimensions().len() > 2 {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: 4rd argument must be a mxArray.\n\0".as_ptr(),
+                        b"vander_pol_2_15_aditive: 8th argument must be a mxArray.\n\0".as_ptr(),
                     );
                 }
             }
@@ -189,7 +229,7 @@ pub extern "C" fn mexFunction(
             if nn != n {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: 3rd and 4rd argument must be the same size.\n\0"
+                        b"vander_pol_2_15_aditive: 7th and 8th argument must be the same size.\n\0"
                             .as_ptr(),
                     );
                 }
@@ -199,19 +239,19 @@ pub extern "C" fn mexFunction(
         None => {
             unsafe {
                 mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: 4th argument must be mxArray.\n\0".as_ptr(),
+                    b"vander_pol_2_15_aditive: 8th argument must be mxArray.\n\0".as_ptr(),
                 );
             }
             return;
         }
     };
 
-    let dZ = match rhslice.get(6) {
+    let dZ = match rhslice.get(8) {
         Some(a) => {
             if a.dimensions().len() > 2 {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: 4rd argument must be a mxArray.\n\0".as_ptr(),
+                        b"vander_pol_2_15_aditive: 9th argument must be a mxArray.\n\0".as_ptr(),
                     );
                 }
             }
@@ -219,7 +259,7 @@ pub extern "C" fn mexFunction(
             if nn != n {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: 3rd and 4rd argument must be the same size.\n\0"
+                        b"vander_pol_2_15_aditive: 7th and 9th argument must be the same size.\n\0"
                             .as_ptr(),
                     );
                 }
@@ -229,7 +269,7 @@ pub extern "C" fn mexFunction(
         None => {
             unsafe {
                 mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: 4th argument must be mxArray.\n\0".as_ptr(),
+                    b"vander_pol_2_15_aditive: 8th argument must be mxArray.\n\0".as_ptr(),
                 );
             }
             return;
@@ -250,7 +290,7 @@ pub extern "C" fn mexFunction(
     };
 
     let mut a = M128dAsF64s { scalars: [0.0; 2] };
-    // let mut b = M128dAsF64s { scalars: [0.0; 2] };
+    let mut b = M128dAsF64s { scalars: [0.0; 2] };
 
     // assume the evenly spaced partition
     let h = unsafe { *t.get_unchecked(1) - *t.get_unchecked(0) };
@@ -268,18 +308,20 @@ pub extern "C" fn mexFunction(
         for i in 1..n {
             unsafe {
                 // 1. Load scalars directly into SIMD (Broadcast)
+                let v_I1 = _mm_load1_pd(dW.as_ptr().add(i));
                 let v_I10 = _mm_load1_pd(dZ.as_ptr().add(i));
 
                 // 2. Compute 'a' vector
                 let x = yn.scalars[0];
                 let y = yn.scalars[1];
+
                 let alpha_1_x2 = alpha * (1.0 - x * x);
 
                 a.scalars[0] = y;
-                a.scalars[1] = alpha_1_x2 * y - omega * x;
+                a.scalars[1] = alpha_1_x2 * y - omega * x + a_const;
 
                 // 3. Compute 'b' vector
-                let b = sigma_1 * x;
+                b.scalars[1] = sigma_1 * x + sigma_2;
 
                 // 4. Final yn update using FMA: yn = yn + (a * h) + (b * I1) + (Aa * h2_2) + (Ab * I10)
                 // Compute Aa and Ab dot products
@@ -290,19 +332,17 @@ pub extern "C" fn mexFunction(
                     ],
                 };
                 let Ab = M128dAsF64s {
-                    scalars: [b, b * alpha_1_x2],
+                    scalars: [b.scalars[1], alpha_1_x2 * b.scalars[1]],
                 };
 
                 // Use FMA for accumulation: acc = (a * h) + yn
-                yn.simd = _mm_fmadd_pd(a.simd, h_vec, yn.simd);
+                let mut acc = _mm_fmadd_pd(a.simd, h_vec, yn.simd);
                 // acc = (b * I1) + acc
-                yn.scalars[1] += b * (*dW.as_ptr().add(i));
+                acc = _mm_fmadd_pd(b.simd, v_I1, acc);
                 // acc = (Aa * h2_2) + acc
-                yn.simd = _mm_fmadd_pd(Aa.simd, h2_2_vec, yn.simd);
+                acc = _mm_fmadd_pd(Aa.simd, h2_2_vec, acc);
                 // acc = (Ab * I_10) + acc
-                yn.simd = _mm_fmadd_pd(Ab.simd, v_I10, yn.simd);
-                // acc = (Ba * I_01) + acc
-                yn.scalars[1] += y * (h * (*dW.as_ptr().add(i)) - (*dZ.as_ptr().add(i)));
+                yn.simd = _mm_fmadd_pd(Ab.simd, v_I10, acc);
 
                 // 6. Store result
                 _mm_storeu_pd(res.add(2 * i), yn.simd);
@@ -326,20 +366,17 @@ pub extern "C" fn mexFunction(
                 let x = yn.scalars[0];
                 let y = yn.scalars[1];
                 let alpha_1_x2 = alpha * (1.0 - x * x);
-
                 a.scalars[0] = yn.scalars[1];
                 a.scalars[1] = alpha_1_x2 * y - omega * x;
 
                 // 3. Compute 'b' vector
-                let b = sigma_1 * x;
+                b.scalars[1] = sigma_1 * x;
 
                 // 5. Final yn update (Vectorized version of your commented math)
                 // Logic: yn += (a * h) + (b * I_1) + (A*a * h2_2) + (A*b * I_10)
 
-                let mut term1 = M128dAsF64s {
-                    simd: _mm_mul_pd(a.simd, h_vec),
-                };
-                term1.scalars[1] += b * (*dW.as_ptr().add(i));
+                let term1 = _mm_mul_pd(a.simd, h_vec);
+                let term2 = _mm_mul_pd(b.simd, v_I1);
 
                 // Dot products for A*a and A*b
                 let Aa = M128dAsF64s {
@@ -349,16 +386,15 @@ pub extern "C" fn mexFunction(
                     ],
                 };
                 let Ab = M128dAsF64s {
-                    scalars: [b, b * alpha_1_x2],
+                    scalars: [b.scalars[1], alpha_1_x2 * b.scalars[1]],
                 };
 
                 let term3 = _mm_mul_pd(Aa.simd, h2_2_vec);
                 let term4 = _mm_mul_pd(Ab.simd, v_I10);
 
                 // Sum everything into yn
-                yn.simd = _mm_add_pd(yn.simd, term1.simd);
+                yn.simd = _mm_add_pd(yn.simd, _mm_add_pd(term1, term2));
                 yn.simd = _mm_add_pd(yn.simd, _mm_add_pd(term3, term4));
-                yn.scalars[1] += y * (h * (*dW.as_ptr().add(i)) - (*dZ.as_ptr().add(i)));
 
                 // 6. Store back to result matrix
                 _mm_storeu_pd(res.add(2 * i), yn.simd);
