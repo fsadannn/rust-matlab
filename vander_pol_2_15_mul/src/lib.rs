@@ -293,10 +293,10 @@ pub extern "C" fn mexFunction(
                     scalars: [b, b * alpha_1_x2],
                 };
 
-                // Use FMA for accumulation: acc = (a * h) + yn
-                yn.simd = _mm_fmadd_pd(a.simd, h_vec, yn.simd);
                 // acc = (b * I1) + acc
                 yn.scalars[1] += b * (*dW.as_ptr().add(i));
+                // Use FMA for accumulation: acc = (a * h) + yn
+                yn.simd = _mm_fmadd_pd(a.simd, h_vec, yn.simd);
                 // acc = (Aa * h2_2) + acc
                 yn.simd = _mm_fmadd_pd(Aa.simd, h2_2_vec, yn.simd);
                 // acc = (Ab * I_10) + acc
