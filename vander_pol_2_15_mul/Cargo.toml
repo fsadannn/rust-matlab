@@ -1,10 +1,11 @@
 [package]
-name = "ll_ginzburg_landau"
+name = "vander_pol_2_15_mul"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 matlab_base_wrapper = {path = "../matlab_base_wrapper"}
+math_helpers = {path = "../math_helpers"}
 
 [lib]
 crate-type=["dylib"]

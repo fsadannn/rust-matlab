@@ -170,8 +170,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
 
 [[package]]
-name = "gemv3d"
-version = "0.1.0"
+name = "gem3d"
+version = "0.2.0"
 dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
@@ -233,6 +233,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "lambert_2_15_additive"
+version = "0.1.0"
+dependencies = [
+ "math_helpers",
+ "matlab_base_wrapper",
+]
+
+[[package]]
+name = "lambert_2_15_mul"
+version = "0.1.0"
+dependencies = [
+ "math_helpers",
+ "matlab_base_wrapper",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.176"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -257,13 +273,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ll_ginzburg_landau"
-version = "0.1.0"
-dependencies = [
- "matlab_base_wrapper",
-]
-
-[[package]]
 name = "log"
 version = "0.4.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -271,7 +280,7 @@ checksum = "34080505efa8e45a4b816c349525ebe327ceaa8559756f0356cba97ef3bf7432"
 
 [[package]]
 name = "math_helpers"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "criterion",
  "rand",
@@ -474,6 +483,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "rpade_no_norm_2x2"
+version = "0.1.0"
+dependencies = [
+ "math_helpers",
+ "matlab_base_wrapper",
+]
+
+[[package]]
 name = "rpade_shared"
 version = "0.1.0"
 dependencies = [
@@ -591,6 +608,22 @@ name = "unicode-ident"
 version = "1.0.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f63a545481291138910575129486daeaf8ac54aee4387fe7906919f7830c7d9d"
+
+[[package]]
+name = "vander_pol_2_15_mix"
+version = "0.1.0"
+dependencies = [
+ "math_helpers",
+ "matlab_base_wrapper",
+]
+
+[[package]]
+name = "vander_pol_2_15_mul"
+version = "0.1.0"
+dependencies = [
+ "math_helpers",
+ "matlab_base_wrapper",
+]
 
 [[package]]
 name = "walkdir"

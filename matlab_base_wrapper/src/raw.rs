@@ -30,6 +30,8 @@ pub struct mxArray_tag {
     _unused: [u8; 0],
 }
 
+use std::slice;
+
 use super::mx::{
     mxGetDimensions, mxGetNumberOfDimensions, mxGetNumberOfElements, mxGetPr, mxGetScalar,
     mxIsComplex, mxIsDouble, mxIsSparse,
@@ -54,6 +56,18 @@ impl mxArray {
 
     pub fn get_scalar(&self) -> f64 {
         unsafe { mxGetScalar(self) }
+    }
+
+    pub fn get_slice(&self) -> &[f64] {
+        let ptr = self.get_ptr();
+        let size = self.dimensions().iter().product();
+        unsafe { slice::from_raw_parts(ptr, size) }
+    }
+
+    pub fn get_mut_slice(&mut self) -> &mut [f64] {
+        let ptr = self.get_ptr();
+        let size = self.dimensions().iter().product();
+        unsafe { slice::from_raw_parts_mut(ptr, size) }
     }
 
     /// Check whether the backing array is complex. Since the only arrays which can
