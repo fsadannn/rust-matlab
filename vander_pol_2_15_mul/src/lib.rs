@@ -302,7 +302,7 @@ pub extern "C" fn mexFunction(
                 // acc = (Ab * I_10) + acc
                 yn.simd = _mm_fmadd_pd(Ab.simd, v_I10, yn.simd);
                 // acc = (Ba * I_01) + acc
-                yn.scalars[1] += y * (h * (*dW.as_ptr().add(i)) - (*dZ.as_ptr().add(i)));
+                yn.scalars[1] += y * sigma_1 * (h * (*dW.as_ptr().add(i)) - (*dZ.as_ptr().add(i)));
 
                 // 6. Store result
                 _mm_storeu_pd(res.add(2 * i), yn.simd);
@@ -358,7 +358,7 @@ pub extern "C" fn mexFunction(
                 // Sum everything into yn
                 yn.simd = _mm_add_pd(yn.simd, term1.simd);
                 yn.simd = _mm_add_pd(yn.simd, _mm_add_pd(term3, term4));
-                yn.scalars[1] += y * (h * (*dW.as_ptr().add(i)) - (*dZ.as_ptr().add(i)));
+                yn.scalars[1] += y * sigma_1 * (h * (*dW.as_ptr().add(i)) - (*dZ.as_ptr().add(i)));
 
                 // 6. Store back to result matrix
                 _mm_storeu_pd(res.add(2 * i), yn.simd);

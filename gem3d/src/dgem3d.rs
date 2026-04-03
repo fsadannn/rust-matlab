@@ -61,9 +61,8 @@ pub fn dgem3d(
         unsafe { *out = *A * (*B) + *y };
         return Ok(());
     }
-
     // if has sum term then we copy over output
-    if y_dims.iter().sum::<usize>() == 3 && unsafe { *y.add(0) == 0.0 } {
+    if y_dims.iter().sum::<usize>() != 3 && unsafe { *y.add(0) != 0.0 } {
         if y_dims[2] == cross_page_dims[2] {
             unsafe { std::ptr::copy_nonoverlapping(y, out, cross_page_dims.iter().product()) };
         } else {
@@ -124,12 +123,12 @@ pub fn dgem3d(
     }
 
     // B is a matrix
-    let n_elements_a = a_dims[1] * a_dims[0];
+    let n_elements_a = a_dims[0] * a_dims[1];
     let n_elements_b = b_dims[0] * b_dims[1];
     let n_elements_c = cross_page_dims[0] * cross_page_dims[1];
-    let rows = a_dims[0] as *const usize;
-    let cols = a_dims[1] as *const usize;
-    let colres = cross_page_dims[1] as *const usize;
+    let rows: *const usize = &(a_dims[0]);
+    let cols: *const usize = &(a_dims[1]);
+    let colres: *const usize = &(cross_page_dims[1]);
     for i in 0..cross_page_dims[2] {
         unsafe {
             dgemm(
@@ -170,6 +169,7 @@ mod tests {
             &[1, 1, 1],
             out.as_mut_ptr(),
         );
+        println!("t1");
         assert!(res.is_err() && res.unwrap_err() == "Dimension mismatch for A and B");
         // A2 == B1 and A3 != B3 and A3 == B2 and B3 != 1
         res = dgem3d(
@@ -181,6 +181,7 @@ mod tests {
             &[1, 1, 1],
             out.as_mut_ptr(),
         );
+        println!("t2");
         assert!(res.is_err() && res.unwrap_err() == "Dimension mismatch for A and B");
         // A2 != B1 and B1 != 1
         res = dgem3d(
@@ -192,6 +193,7 @@ mod tests {
             &[1, 1, 1],
             out.as_mut_ptr(),
         );
+        println!("t3");
         assert!(res.is_err() && res.unwrap_err() == "Dimension mismatch for A and B");
         // A2 != B1 and B1 == 1 and B2 != A3
         res = dgem3d(
@@ -203,6 +205,7 @@ mod tests {
             &[1, 1, 1],
             out.as_mut_ptr(),
         );
+        println!("t4");
         assert!(res.is_err() && res.unwrap_err() == "Dimension mismatch for A and B");
         // A2 != B1 and B1 == 1 and B2 == A3 and B3 != 1
         res = dgem3d(
@@ -214,6 +217,22 @@ mod tests {
             &[1, 1, 1],
             out.as_mut_ptr(),
         );
+        println!("t5");
         assert!(res.is_err() && res.unwrap_err() == "Dimension mismatch for A and B");
+    }
+
+    #[test]
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    fn test_3d() {
+        let mut out = vec![0.0; 12];
+        let mut res = dgem3d(
+            vec![0.0; 8].as_ptr(),
+            &[2, 2, 2],
+            vec![0.0; 8].as_ptr(),
+            &[2, 2, 2],
+            vec![0.0; 1].as_ptr(),
+            &[1, 1, 1],
+            out.as_mut_ptr(),
+        );
     }
 }

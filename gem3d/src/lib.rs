@@ -148,12 +148,20 @@ pub extern "C" fn mexFunction(
     unsafe { *plhs.add(0) = ans_matrix };
     let res = unsafe { ans_matrix.as_mut().unwrap().get_ptr() };
 
+    let mut _yy = [0.0];
+    let ym_use = if ymx.is_scalar() {
+        _yy[0] = ymx.get_scalar();
+        _yy.as_ptr()
+    } else {
+        ymx.get_ptr()
+    };
+
     match dgem3d(
         Amx.get_ptr(),
         &a_dim,
         Bmx.get_ptr(),
         &b_dim,
-        ymx.get_ptr(),
+        ym_use,
         &y_dim,
         res,
     ) {

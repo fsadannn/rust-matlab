@@ -291,6 +291,7 @@ pub extern "C" fn mexFunction(
     };
 
     let mut a = M128dAsF64s { scalars: [0.0; 2] };
+    // let mut b = M128dAsF64s { scalars: [0.0; 2] };
 
     // assume the evenly spaced partition
     let h = unsafe { *t.get_unchecked(1) - *t.get_unchecked(0) };
@@ -298,9 +299,9 @@ pub extern "C" fn mexFunction(
 
     if is_x86_feature_detected!("fma") {
         #[cfg(target_arch = "x86")]
-        use std::arch::x86::{_mm_fmadd_pd, _mm_loadu_pd, _mm_set1_pd, _mm_storeu_pd};
+        use std::arch::x86::{_mm_fmadd_pd, _mm_load1_pd, _mm_set1_pd, _mm_storeu_pd};
         #[cfg(target_arch = "x86_64")]
-        use std::arch::x86_64::{_mm_fmadd_pd, _mm_loadu_pd, _mm_set1_pd, _mm_storeu_pd};
+        use std::arch::x86_64::{_mm_fmadd_pd, _mm_load1_pd, _mm_set1_pd, _mm_storeu_pd};
 
         let h_vec = unsafe { _mm_set1_pd(h) };
         let h2_2_vec = unsafe { _mm_set1_pd(h2_2) };
@@ -308,20 +309,19 @@ pub extern "C" fn mexFunction(
         for i in 1..n {
             unsafe {
                 // 1. Load scalars directly into SIMD (Broadcast)
-                let v_I1 = _mm_loadu_pd(dW.as_ptr().add(i));
-                let v_I10 = _mm_loadu_pd(dZ.as_ptr().add(i));
+                let v_I10 = _mm_load1_pd(dZ.as_ptr().add(2 * i));
+                let v_I10_2 = _mm_load1_pd(dZ.as_ptr().add(2 * i + 1));
 
                 // 2. Compute 'a' vector
                 let x = yn.scalars[0];
                 let y = yn.scalars[1];
-
                 let alpha_1_x2 = alpha * (1.0 - x * x);
 
                 a.scalars[0] = y;
                 a.scalars[1] = alpha_1_x2 * y - omega * x + a_const;
 
                 // 3. Compute 'b' vector
-                let bb = sigma_1 * x + sigma_2;
+                let b = sigma_1 * x;
 
                 // 4. Final yn update using FMA: yn = yn + (a * h) + (b * I1) + (Aa * h2_2) + (Ab * I10)
                 // Compute Aa and Ab dot products
@@ -332,19 +332,26 @@ pub extern "C" fn mexFunction(
                     ],
                 };
                 let Ab = M128dAsF64s {
-                    scalars: [bb, alpha_1_x2 * bb],
+                    scalars: [b, b * alpha_1_x2],
+                };
+
+                let Ab2 = M128dAsF64s {
+                    scalars: [sigma_2, sigma_2 * alpha_1_x2],
                 };
 
                 // acc = (b * I1) + acc
-                yn.scalars[1] += bb * (*dW.as_ptr().add(i));
+                yn.scalars[1] +=
+                    b * (*dW.as_ptr().add(2 * i)) + sigma_2 * (*dW.as_ptr().add(2 * i + 1));
                 // Use FMA for accumulation: acc = (a * h) + yn
                 yn.simd = _mm_fmadd_pd(a.simd, h_vec, yn.simd);
                 // acc = (Aa * h2_2) + acc
                 yn.simd = _mm_fmadd_pd(Aa.simd, h2_2_vec, yn.simd);
                 // acc = (Ab * I_10) + acc
                 yn.simd = _mm_fmadd_pd(Ab.simd, v_I10, yn.simd);
+                yn.simd = _mm_fmadd_pd(Ab2.simd, v_I10_2, yn.simd);
                 // acc = (Ba * I_01) + acc
-                yn.scalars[1] += y * (h * (*dW.as_ptr().add(i)) - (*dZ.as_ptr().add(i)));
+                yn.scalars[1] +=
+                    y * sigma_1 * (h * (*dW.as_ptr().add(2 * i)) - (*dZ.as_ptr().add(2 * i)));
 
                 // 6. Store result
                 _mm_storeu_pd(res.add(2 * i), yn.simd);
@@ -362,17 +369,18 @@ pub extern "C" fn mexFunction(
         for i in 1..n {
             unsafe {
                 // 1. Efficiently load and broadcast I_1 and I_10
-                let v_I1 = _mm_load1_pd(dW.as_ptr().add(i));
-                let v_I10 = _mm_load1_pd(dZ.as_ptr().add(i));
+                let v_I10 = _mm_load1_pd(dZ.as_ptr().add(2 * i));
+                let v_I10_2 = _mm_load1_pd(dZ.as_ptr().add(2 * i));
 
                 let x = yn.scalars[0];
                 let y = yn.scalars[1];
                 let alpha_1_x2 = alpha * (1.0 - x * x);
+
                 a.scalars[0] = yn.scalars[1];
-                a.scalars[1] = alpha_1_x2 * y - omega * x;
+                a.scalars[1] = alpha_1_x2 * y - omega * x + a_const;
 
                 // 3. Compute 'b' vector
-                let bb = sigma_1 * x + sigma_2;
+                let b = sigma_1 * x;
 
                 // 5. Final yn update (Vectorized version of your commented math)
                 // Logic: yn += (a * h) + (b * I_1) + (A*a * h2_2) + (A*b * I_10)
@@ -380,7 +388,8 @@ pub extern "C" fn mexFunction(
                 let mut term1 = M128dAsF64s {
                     simd: _mm_mul_pd(a.simd, h_vec),
                 };
-                term1.scalars[1] += bb * (*dW.as_ptr().add(i));
+                term1.scalars[1] +=
+                    b * (*dW.as_ptr().add(2 * i)) + sigma_2 * (*dW.as_ptr().add(2 * i + 1));
 
                 // Dot products for A*a and A*b
                 let Aa = M128dAsF64s {
@@ -390,16 +399,21 @@ pub extern "C" fn mexFunction(
                     ],
                 };
                 let Ab = M128dAsF64s {
-                    scalars: [bb, alpha_1_x2 * bb],
+                    scalars: [b, b * alpha_1_x2],
+                };
+                let Ab2 = M128dAsF64s {
+                    scalars: [sigma_2, sigma_2 * alpha_1_x2],
                 };
 
                 let term3 = _mm_mul_pd(Aa.simd, h2_2_vec);
                 let term4 = _mm_mul_pd(Ab.simd, v_I10);
+                let term5 = _mm_mul_pd(Ab2.simd, v_I10_2);
 
                 // Sum everything into yn
-                yn.simd = _mm_add_pd(yn.simd, term1.simd);
-                yn.simd = _mm_add_pd(yn.simd, _mm_add_pd(term3, term4));
-                yn.scalars[1] += y * (h * (*dW.as_ptr().add(i)) - (*dZ.as_ptr().add(i)));
+                yn.simd = _mm_add_pd(yn.simd, _mm_add_pd(term1.simd, term3));
+                yn.simd = _mm_add_pd(yn.simd, _mm_add_pd(term4, term5));
+                yn.scalars[1] +=
+                    y * sigma_1 * (h * (*dW.as_ptr().add(2 * i)) - (*dZ.as_ptr().add(2 * i)));
 
                 // 6. Store back to result matrix
                 _mm_storeu_pd(res.add(2 * i), yn.simd);
