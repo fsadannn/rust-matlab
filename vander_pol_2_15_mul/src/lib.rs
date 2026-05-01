@@ -43,7 +43,7 @@ pub extern "C" fn mexFunction(
     if !is_x86_feature_detected!("sse2") {
         unsafe {
             mexErrMsgTxt(
-                "vander_pol_2_15_aditive: SSE2 instruction set is not supported on this platform.\n\0"
+                "vander_pol_2_15_mul: SSE2 instruction set is not supported on this platform.\n\0"
                     .as_ptr(),
             );
         }
@@ -53,21 +53,21 @@ pub extern "C" fn mexFunction(
     if nrhs != 7 {
         // Letting the standard library do the work of making Rusts strings C-compatible
         unsafe {
-            mexErrMsgTxt("vander_pol_2_15_aditive: 7 input arguments required.\n\0".as_ptr());
+            mexErrMsgTxt("vander_pol_2_15_mul: 7 input arguments required.\n\0".as_ptr());
         }
     }
 
     if nlhs > 1 {
         // Letting the standard library do the work of making Rusts strings C-compatible
         unsafe {
-            mexErrMsgTxt("vander_pol_2_15_aditive: too many output arguments.\n\0".as_ptr());
+            mexErrMsgTxt("vander_pol_2_15_mul: too many output arguments.\n\0".as_ptr());
         }
     }
 
     if nlhs < 1 {
         // Letting the standard library do the work of making Rusts strings C-compatible
         unsafe {
-            mexErrMsgTxt("vander_pol_2_15_aditive: too few output arguments.\n\0".as_ptr());
+            mexErrMsgTxt("vander_pol_2_15_mul: too few output arguments.\n\0".as_ptr());
         }
     }
 
@@ -76,7 +76,7 @@ pub extern "C" fn mexFunction(
             if !a.is_scalar() {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: first argument must be a number.\n\0".as_ptr(),
+                        b"vander_pol_2_15_mul: first argument must be a number.\n\0".as_ptr(),
                     );
                 }
             }
@@ -84,9 +84,7 @@ pub extern "C" fn mexFunction(
         }
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: first argument must be a number.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"vander_pol_2_15_mul: first argument must be a number.\n\0".as_ptr());
             }
             return;
         }
@@ -96,7 +94,7 @@ pub extern "C" fn mexFunction(
             if !a.is_scalar() {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: first argument must be a number.\n\0".as_ptr(),
+                        b"vander_pol_2_15_mul: first argument must be a number.\n\0".as_ptr(),
                     );
                 }
             }
@@ -104,9 +102,7 @@ pub extern "C" fn mexFunction(
         }
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: first argument must be a number.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"vander_pol_2_15_mul: first argument must be a number.\n\0".as_ptr());
             }
             return;
         }
@@ -116,7 +112,7 @@ pub extern "C" fn mexFunction(
             if !a.is_scalar() {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: first argument must be a number.\n\0".as_ptr(),
+                        b"vander_pol_2_15_mul: first argument must be a number.\n\0".as_ptr(),
                     );
                 }
             }
@@ -124,9 +120,7 @@ pub extern "C" fn mexFunction(
         }
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: first argument must be a number.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"vander_pol_2_15_mul: first argument must be a number.\n\0".as_ptr());
             }
             return;
         }
@@ -137,7 +131,7 @@ pub extern "C" fn mexFunction(
             if max_dim != 2 {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: second argument must be a vector of 2 components.\n\0"
+                        b"vander_pol_2_15_mul: second argument must be a vector of 2 components.\n\0"
                             .as_ptr(),
                     );
                 }
@@ -147,7 +141,7 @@ pub extern "C" fn mexFunction(
         None => {
             unsafe {
                 mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: second argument must be a vector.\n\0".as_ptr(),
+                    b"vander_pol_2_15_mul: second argument must be a vector.\n\0".as_ptr(),
                 );
             }
             return;
@@ -159,7 +153,7 @@ pub extern "C" fn mexFunction(
             if a.dimensions().len() > 2 {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: 3rd argument must be a vector.\n\0".as_ptr(),
+                        b"vander_pol_2_15_mul: 3rd argument must be a vector.\n\0".as_ptr(),
                     );
                 }
             }
@@ -168,9 +162,7 @@ pub extern "C" fn mexFunction(
         }
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: 3rd argument must be a vector.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"vander_pol_2_15_mul: 3rd argument must be a vector.\n\0".as_ptr());
             }
             return;
         }
@@ -181,7 +173,7 @@ pub extern "C" fn mexFunction(
             if a.dimensions().len() > 2 {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: 4rd argument must be a mxArray.\n\0".as_ptr(),
+                        b"vander_pol_2_15_mul: 4rd argument must be a mxArray.\n\0".as_ptr(),
                     );
                 }
             }
@@ -189,7 +181,7 @@ pub extern "C" fn mexFunction(
             if nn != n {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: 3rd and 4rd argument must be the same size.\n\0"
+                        b"vander_pol_2_15_mul: 3rd and 4rd argument must be the same size.\n\0"
                             .as_ptr(),
                     );
                 }
@@ -198,9 +190,7 @@ pub extern "C" fn mexFunction(
         }
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: 4th argument must be mxArray.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"vander_pol_2_15_mul: 4th argument must be mxArray.\n\0".as_ptr());
             }
             return;
         }
@@ -211,7 +201,7 @@ pub extern "C" fn mexFunction(
             if a.dimensions().len() > 2 {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: 4rd argument must be a mxArray.\n\0".as_ptr(),
+                        b"vander_pol_2_15_mul: 4rd argument must be a mxArray.\n\0".as_ptr(),
                     );
                 }
             }
@@ -219,7 +209,7 @@ pub extern "C" fn mexFunction(
             if nn != n {
                 unsafe {
                     mexErrMsgTxt(
-                        b"vander_pol_2_15_aditive: 3rd and 4rd argument must be the same size.\n\0"
+                        b"vander_pol_2_15_mul: 3rd and 4rd argument must be the same size.\n\0"
                             .as_ptr(),
                     );
                 }
@@ -228,9 +218,7 @@ pub extern "C" fn mexFunction(
         }
         None => {
             unsafe {
-                mexErrMsgTxt(
-                    b"vander_pol_2_15_aditive: 4th argument must be mxArray.\n\0".as_ptr(),
-                );
+                mexErrMsgTxt(b"vander_pol_2_15_mul: 4th argument must be mxArray.\n\0".as_ptr());
             }
             return;
         }
@@ -302,7 +290,7 @@ pub extern "C" fn mexFunction(
                 // acc = (Ab * I_10) + acc
                 yn.simd = _mm_fmadd_pd(Ab.simd, v_I10, yn.simd);
                 // acc = (Ba * I_01) + acc
-                yn.scalars[1] += y * (h * (*dW.as_ptr().add(i)) - (*dZ.as_ptr().add(i)));
+                yn.scalars[1] += y * sigma_1 * (h * (*dW.as_ptr().add(i)) - (*dZ.as_ptr().add(i)));
 
                 // 6. Store result
                 _mm_storeu_pd(res.add(2 * i), yn.simd);
@@ -358,7 +346,7 @@ pub extern "C" fn mexFunction(
                 // Sum everything into yn
                 yn.simd = _mm_add_pd(yn.simd, term1.simd);
                 yn.simd = _mm_add_pd(yn.simd, _mm_add_pd(term3, term4));
-                yn.scalars[1] += y * (h * (*dW.as_ptr().add(i)) - (*dZ.as_ptr().add(i)));
+                yn.scalars[1] += y * sigma_1 * (h * (*dW.as_ptr().add(i)) - (*dZ.as_ptr().add(i)));
 
                 // 6. Store back to result matrix
                 _mm_storeu_pd(res.add(2 * i), yn.simd);

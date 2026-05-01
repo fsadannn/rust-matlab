@@ -91,24 +91,10 @@ pub extern "C" fn mexFunction(
         *y_dimensions.get(2).unwrap_or(&1),
     ];
 
-    if (a_dim[1] == b_dim[0] && a_dim[2] != b_dim[2] && (a_dim[2] != b_dim[1] || b_dim[2] != 1))
-        || (a_dim[1] != b_dim[0] && (b_dim[0] != 1 || b_dim[1] != a_dim[2] || b_dim[2] != 1))
-    {
-        unsafe {
-            mexPrintf(
-                "gem3d: Dimensions of A are [%zu %zu %zu], of B are [%zu %zu %zu] and of y are [%zu %zu %zu].\n\0".as_ptr(),
-                a_dim[0], a_dim[1], a_dim[2],
-                b_dim[0], b_dim[1], b_dim[2],
-                y_dim[0], y_dim[1], y_dim[2],
-            );
-        }
-        unsafe { mexErrMsgTxt("gem3d: Dimensions mismatch!\n\0".as_ptr()) };
-    }
-
     let cross_page_dims = [
         a_dim[0],
         if a_dim[1] == b_dim[0] {
-            if b_dim[2] == 1 { 1 } else { b_dim[1] }
+            b_dim[1]
         } else {
             a_dim[1]
         },
@@ -148,12 +134,20 @@ pub extern "C" fn mexFunction(
     unsafe { *plhs.add(0) = ans_matrix };
     let res = unsafe { ans_matrix.as_mut().unwrap().get_ptr() };
 
+    let mut _yy = [0.0];
+    let ym_use = if ymx.is_scalar() {
+        _yy[0] = ymx.get_scalar();
+        _yy.as_ptr()
+    } else {
+        ymx.get_ptr()
+    };
+
     match dgem3d(
         Amx.get_ptr(),
         &a_dim,
         Bmx.get_ptr(),
         &b_dim,
-        ymx.get_ptr(),
+        ym_use,
         &y_dim,
         res,
     ) {
@@ -165,7 +159,7 @@ pub extern "C" fn mexFunction(
                 a_dim[0], a_dim[1], a_dim[2],
                 b_dim[0], b_dim[1], b_dim[2],
                 y_dim[0], y_dim[1], y_dim[2],
-            );
+                );
             }
             unsafe { mexErrMsgTxt("gem3d: Dimensions mismatch!\n\0".as_ptr()) };
         }
