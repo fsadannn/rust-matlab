@@ -56,9 +56,9 @@ fn dist() -> Result<(), DynError> {
 }
 
 fn dist_binary() -> Result<(), DynError> {
-    let extension = match std::env::consts::OS {
-        "windows" => ".mexw64",
-        "linux" => ".mexa64",
+    let (src_extension, mex_extension) = match std::env::consts::OS {
+        "windows" => ("dll", ".mexw64"),
+        "linux" => ("so", ".mexa64"),
         "macos" => panic!("Target macos are currently unsupported."),
         unsupported_target => panic!("Target {unsupported_target} are currently unsupported."),
     };
@@ -78,18 +78,19 @@ fn dist_binary() -> Result<(), DynError> {
     if dst.is_dir() {
         for entry in (fs::read_dir(dst)?).flatten() {
             let path = entry.path();
-            if !path.is_file() || path.extension().unwrap_or(OsStr::new("")) != "dll" {
+            if !path.is_file() || path.extension().unwrap_or(OsStr::new("")) != src_extension {
                 continue;
             }
-            let filename = path
-                .file_name()
-                .unwrap_or(OsStr::new(""))
-                .to_str()
-                .unwrap_or("")
-                .rsplit_once('.')
-                .unwrap_or(("", ""))
-                .0;
-            fs::copy(&path, dist_dir().join(format!("{}{}", filename, extension)))?;
+            let mut filename = path
+                .file_stem()
+                .and_then(|s| s.to_str())
+                .unwrap_or("");
+
+            if std::env::consts::OS == "linux" && filename.starts_with("lib") {
+                filename = &filename[3..];
+            }
+
+            fs::copy(&path, dist_dir().join(format!("{}{}", filename, mex_extension)))?;
         }
     } else {
         panic!("Target path is not a directory")
