@@ -22,12 +22,13 @@ unsafe extern "C" {
         flag: mxComplexity,
     ) -> *mut mxArray;
     pub fn mxGetScalar_800(pa: *const mxArray) -> f64;
+    pub fn mxDestroyArray_800(pa: *mut mxArray);
 }
 
 pub use self::{
     mxCreateDoubleMatrix_800 as mxCreateDoubleMatrix,
-    mxCreateNumericArray_800 as mxCreateNumericArray, mxGetDimensions_800 as mxGetDimensions,
-    mxGetNumberOfDimensions_800 as mxGetNumberOfDimensions,
+    mxCreateNumericArray_800 as mxCreateNumericArray, mxDestroyArray_800 as mxDestroyArray,
+    mxGetDimensions_800 as mxGetDimensions, mxGetNumberOfDimensions_800 as mxGetNumberOfDimensions,
     mxGetNumberOfElements_800 as mxGetNumberOfElements, mxGetPr_800 as mxGetPr,
     mxGetScalar_800 as mxGetScalar, mxIsComplex_800 as mxIsComplex, mxIsDouble_800 as mxIsDouble,
     mxIsSparse_800 as mxIsSparse,
