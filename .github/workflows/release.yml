@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
@@ -25,14 +25,44 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup MATLAB
-        uses: matlab-actions/setup-matlab@v2
+        uses: matlab-actions/setup-matlab@v3
         with:
           release: R2023a
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Get MATLAB root path (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          # 1. Locate the matlab executable in the PATH
+          MATLAB_EXE=$(which matlab)
+          
+          # 2. Traverse up two directory levels (from <root>/bin/matlab to <root>)
+          MATLAB_ROOT=$(dirname $(dirname "$MATLAB_EXE"))
+          
+          # 3. Export as a GitHub environment variable for subsequent steps
+          echo "MATLAB_ROOT=$MATLAB_ROOT" >> $GITHUB_ENV
+          echo "MATLAB is installed at: $MATLAB_ROOT"
+
+      - name: Get MATLAB root path (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          # 1. Locate the executable
+          $MatlabExe = (Get-Command matlab).Path
+          
+          # 2. Traverse up two levels
+          $MatlabRoot = Split-Path (Split-Path $MatlabExe)
+          
+          # 3. Export to GitHub ENV
+          "MATLAB_ROOT=$MatlabRoot" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Host "MATLAB is installed at: $MatlabRoot"
+
       - name: Build extensions
+        env:
+          MATLABPATH: ${{ env.MATLAB_ROOT }}
         run: cargo xtask dist
 
       - name: Upload Artifacts
