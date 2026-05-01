@@ -36,11 +36,16 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          # 1. Locate the matlab executable in the PATH
-          MATLAB_EXE=$(which matlab)
+          # 1. Locate the matlab executable and resolve all symlinks
+          MATLAB_EXE=$(readlink -f $(which matlab))
           
           # 2. Traverse up two directory levels (from <root>/bin/matlab to <root>)
           MATLAB_ROOT=$(dirname $(dirname "$MATLAB_EXE"))
+          
+          if [ -z "$MATLAB_ROOT" ] || [ "$MATLAB_ROOT" == "." ]; then
+            echo "Error: Could not determine MATLAB_ROOT"
+            exit 1
+          fi
           
           # 3. Export as a GitHub environment variable for subsequent steps
           echo "MATLAB_ROOT=$MATLAB_ROOT" >> $GITHUB_ENV
@@ -50,11 +55,16 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          # 1. Locate the executable
+          # 1. Locate the executable and resolve its path
           $MatlabExe = (Get-Command matlab).Path
           
           # 2. Traverse up two levels
           $MatlabRoot = Split-Path (Split-Path $MatlabExe)
+          
+          if ([string]::IsNullOrWhiteSpace($MatlabRoot)) {
+            Write-Error "Could not determine MATLAB_ROOT"
+            exit 1
+          }
           
           # 3. Export to GitHub ENV
           "MATLAB_ROOT=$MatlabRoot" | Out-File -FilePath $env:GITHUB_ENV -Append
