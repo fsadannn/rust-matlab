@@ -1,11 +1,11 @@
 [package]
 name = "rpade_triangular"
-version = "0.1.0"
-edition = "2024"
+version.workspace = true
+edition.workspace = true
 
 [dependencies]
-matlab_base_wrapper = {path = "../matlab_base_wrapper"}
-rpade_shared={ path = "../rpade_shared"}
+matlab_base_wrapper = { path = "../matlab_base_wrapper" }
+rpade_shared = { path = "../rpade_shared" }
 
 [lib]
-crate-type=["dylib"]
+crate-type = ["dylib"]

@@ -171,7 +171,7 @@ checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
 
 [[package]]
 name = "gem3d"
-version = "0.2.0"
+version = "0.6.0"
 dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
@@ -211,7 +211,7 @@ dependencies = [
 
 [[package]]
 name = "ito_double_integral_system"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "matlab_base_wrapper",
 ]
@@ -234,7 +234,7 @@ dependencies = [
 
 [[package]]
 name = "lambert_2_15_additive"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
@@ -242,7 +242,7 @@ dependencies = [
 
 [[package]]
 name = "lambert_2_15_mul"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
@@ -250,7 +250,7 @@ dependencies = [
 
 [[package]]
 name = "landau_2_15"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "matlab_base_wrapper",
 ]
@@ -263,7 +263,7 @@ checksum = "58f929b4d672ea937a23a1ab494143d968337a5f47e56d0815df1e0890ddf174"
 
 [[package]]
 name = "lin_euler_maruyama_multi"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
@@ -272,7 +272,7 @@ dependencies = [
 
 [[package]]
 name = "lin_taylor_2_1"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
@@ -287,7 +287,7 @@ checksum = "34080505efa8e45a4b816c349525ebe327ceaa8559756f0356cba97ef3bf7432"
 
 [[package]]
 name = "math_helpers"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "criterion",
  "rand",
@@ -295,15 +295,15 @@ dependencies = [
 
 [[package]]
 name = "matlab_base_wrapper"
-version = "0.0.0"
+version = "0.6.0"
 
 [[package]]
 name = "matlab_blas_wrapper"
-version = "0.0.0"
+version = "0.6.0"
 
 [[package]]
 name = "matlab_lapack_wrapper"
-version = "0.0.0"
+version = "0.6.0"
 
 [[package]]
 name = "memchr"
@@ -473,7 +473,7 @@ checksum = "caf4aa5b0f434c91fe5c7f1ecb6a5ece2130b02ad2a590589dda5146df959001"
 
 [[package]]
 name = "rpade"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "matlab_base_wrapper",
  "rpade_shared",
@@ -481,7 +481,7 @@ dependencies = [
 
 [[package]]
 name = "rpade_no_norm"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
@@ -491,7 +491,7 @@ dependencies = [
 
 [[package]]
 name = "rpade_no_norm_2x2"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
@@ -499,7 +499,7 @@ dependencies = [
 
 [[package]]
 name = "rpade_shared"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "math_helpers",
  "matlab_base_wrapper",
@@ -509,7 +509,7 @@ dependencies = [
 
 [[package]]
 name = "rpade_triangular"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "matlab_base_wrapper",
  "rpade_shared",
@@ -517,7 +517,7 @@ dependencies = [
 
 [[package]]
 name = "rpade_triangular_no_norm"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "math_helpers",
  "matlab_base_wrapper",

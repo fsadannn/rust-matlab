@@ -1,7 +1,7 @@
 [package]
 name = "math_helpers"
-version = "0.1.0"
-edition = "2024"
+version.workspace = true
+edition.workspace = true
 
 [dev-dependencies]
 criterion = { version = "0.7.0", features = ["html_reports"] }

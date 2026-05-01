@@ -23,6 +23,14 @@ members = [
     "landau_2_15",
 ]
 
+[workspace.package]
+version = "0.6.0"
+edition = "2024"
+authors = ["Frank S. Naranjo"]
+license = "Apache-2.0"
+repository = "https://github.com/fsnaranjo/rust_matlab"
+keywords = ["matlab", "stochastic", "integration"]
+description = "A collection of stochastic differential equation and related mathematical tools implemented in Rust, with interfaces to MATLAB."
 
 [profile.release]
 opt-level = 3
